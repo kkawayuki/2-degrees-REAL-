@@ -5,6 +5,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 
 import RandomItem from "@/components/RandomItem";
+import WelcomeMessage from "@/components/WelcomeMessage";
 
 /*
 This is the starting point of our application. Here, we can begin coding 
@@ -27,6 +28,10 @@ function App() {
 				</a>
 			</div>
 			<h1>Vite + React</h1>
+			
+			{/* Example: Using your custom component */}
+			<WelcomeMessage name="Developer" />
+			
 			<div className="card">
 				<button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
 				<p>
