@@ -1,47 +1,51 @@
-import { useState } from "react";
-
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
-import RandomItem from "@/components/RandomItem";
-import WelcomeMessage from "@/components/WelcomeMessage";
-
-/*
-This is the starting point of our application. Here, we can begin coding 
-and transforming this page into whatever best suits our needs. 
-For example, we can start by creating a login page, home page, or an about section; 
-there are many ways to get your application up and running. 
-With App.jsx, we can also define global variables and routes to store information as well as page navigation.
-*/
 function App() {
-	const [count, setCount] = useState(0);
+	// Generate evenly distributed background stars across the entire page
+	const generateStars = () => {
+		const stars = [];
+		// Create more stars spread evenly across the entire viewport
+		for (let i = 0; i < 80; i++) {
+			stars.push({
+				top: Math.random() * 100 + '%', // 0-100% of height
+				left: Math.random() * 100 + '%', // 0-100% of width
+				size: Math.random() * 2 + 3, // Vary size between 3-5px
+				opacity: Math.random() * 0.5 + 0.5, // Vary opacity between 0.5-1
+			});
+		}
+		return stars;
+	};
+
+	const backgroundStars = generateStars();
 
 	return (
-		<>
-			<div>
-				<a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank" rel="noreferrer">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
+		<div className="landing-page">
+			{/* Background stars */}
+			{backgroundStars.map((star, index) => (
+				<div 
+					key={index} 
+					className="star-dot" 
+					style={{
+						top: star.top,
+						left: star.left,
+						width: `${star.size}px`,
+						height: `${star.size}px`,
+						borderRadius: `${star.size / 2}px`,
+						opacity: star.opacity,
+					}} 
+				/>
+			))}
 			
-			{/* Example: Using your custom component */}
-			<WelcomeMessage name="Developer" />
-			
-			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-				<p>
-					Edit <code>src/App.jsx</code> and save to test HMR
-				</p>
-
-				<RandomItem maximum={1000} />
+			<div className="content-group">
+				<h1 className="headline">2ND DEGREE</h1>
+				<img src="/tytle.svg" alt="Star" className="star-tytle" />
+				<img src="/tytle.svg" alt="Star" className="star-n" />
+				<div className="button-group">
+					<div className="button-bg"></div>
+					<button className="cta-button">Get started →</button>
+				</div>
 			</div>
-			<p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-		</>
+		</div>
 	);
 }
 
