@@ -169,65 +169,65 @@ async def get_demo_user(username: str) -> Dict:
             "id": "123456789",
             "name": "Alice Johnson",
             "username": "alice",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/1234567890/example1_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=1",
             "description": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
             "public_metrics": {
-                "followers_count": 1250,
-                "following_count": 350,
-                "tweet_count": 5420,
-                "listed_count": 45
+                "followers_count": 450,
+                "following_count": 380,
+                "tweet_count": 320,
+                "listed_count": 12
             }
         },
         "bob": {
             "id": "987654321",
             "name": "Bob Smith",
             "username": "bob",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/9876543210/example2_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=5",
             "description": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
             "public_metrics": {
-                "followers_count": 890,
-                "following_count": 420,
-                "tweet_count": 3200,
-                "listed_count": 28
+                "followers_count": 280,
+                "following_count": 250,
+                "tweet_count": 185,
+                "listed_count": 8
             }
         },
         "charlie": {
             "id": "555666777",
             "name": "Charlie Brown",
             "username": "charlie",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=12",
             "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
             "public_metrics": {
-                "followers_count": 5600,
-                "following_count": 1200,
-                "tweet_count": 8900,
-                "listed_count": 120
+                "followers_count": 650,
+                "following_count": 580,
+                "tweet_count": 420,
+                "listed_count": 18
             }
         },
         "diana": {
             "id": "444555666",
             "name": "Diana Prince",
             "username": "diana",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=47",
             "description": "UX researcher and designer | Building better products through user insights",
             "public_metrics": {
-                "followers_count": 3400,
-                "following_count": 800,
-                "tweet_count": 2100,
-                "listed_count": 67
+                "followers_count": 520,
+                "following_count": 490,
+                "tweet_count": 275,
+                "listed_count": 15
             }
         },
         "eve": {
             "id": "333444555",
             "name": "Eve Wilson",
             "username": "eve",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=33",
             "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
             "public_metrics": {
-                "followers_count": 2100,
-                "following_count": 600,
-                "tweet_count": 1500,
-                "listed_count": 35
+                "followers_count": 380,
+                "following_count": 340,
+                "tweet_count": 210,
+                "listed_count": 10
             }
         }
     }
@@ -239,7 +239,7 @@ async def get_demo_user(username: str) -> Dict:
             detail=f"Demo user '{username}' not found. Available demo users: {', '.join(demo_users.keys())}"
         )
     
-    return demo_users[username_lower]
+    return demo_users[username_lower] 
 
 
 @app.get("/demo/mutuals")
@@ -265,65 +265,65 @@ async def get_demo_mutuals(
             "id": "123456789",
             "name": "Alice Johnson",
             "username": "alice",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/1234567890/example1_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=1",
             "description": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
             "public_metrics": {
-                "followers_count": 1250,
-                "following_count": 350,
-                "tweet_count": 5420,
-                "listed_count": 45
+                "followers_count": 450,
+                "following_count": 380,
+                "tweet_count": 320,
+                "listed_count": 12
             }
         },
         "bob": {
             "id": "987654321",
             "name": "Bob Smith",
             "username": "bob",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/9876543210/example2_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=5",
             "description": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
             "public_metrics": {
-                "followers_count": 890,
-                "following_count": 420,
-                "tweet_count": 3200,
-                "listed_count": 28
+                "followers_count": 280,
+                "following_count": 250,
+                "tweet_count": 185,
+                "listed_count": 8
             }
         },
         "charlie": {
             "id": "555666777",
             "name": "Charlie Brown",
             "username": "charlie",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=12",
             "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
             "public_metrics": {
-                "followers_count": 5600,
-                "following_count": 1200,
-                "tweet_count": 8900,
-                "listed_count": 120
+                "followers_count": 650,
+                "following_count": 580,
+                "tweet_count": 420,
+                "listed_count": 18
             }
         },
         "diana": {
             "id": "444555666",
             "name": "Diana Prince",
             "username": "diana",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=47",
             "description": "UX researcher and designer | Building better products through user insights",
             "public_metrics": {
-                "followers_count": 3400,
-                "following_count": 800,
-                "tweet_count": 2100,
-                "listed_count": 67
+                "followers_count": 520,
+                "following_count": 490,
+                "tweet_count": 275,
+                "listed_count": 15
             }
         },
         "eve": {
             "id": "333444555",
             "name": "Eve Wilson",
             "username": "eve",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=33",
             "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
             "public_metrics": {
-                "followers_count": 2100,
-                "following_count": 600,
-                "tweet_count": 1500,
-                "listed_count": 35
+                "followers_count": 380,
+                "following_count": 340,
+                "tweet_count": 210,
+                "listed_count": 10
             }
         }
     }
@@ -351,39 +351,39 @@ async def get_demo_mutuals(
                 "id": "555666777",
                 "name": "Charlie Brown",
                 "username": "charlie",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=12",
                 "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
                 "public_metrics": {
-                    "followers_count": 5600,
-                    "following_count": 1200,
-                    "tweet_count": 8900,
-                    "listed_count": 120
+                    "followers_count": 650,
+                    "following_count": 580,
+                    "tweet_count": 420,
+                    "listed_count": 18
                 }
             },
             {
                 "id": "444555666",
                 "name": "Diana Prince",
                 "username": "diana",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=47",
                 "description": "UX researcher and designer | Building better products through user insights",
                 "public_metrics": {
-                    "followers_count": 3400,
-                    "following_count": 800,
-                    "tweet_count": 2100,
-                    "listed_count": 67
+                    "followers_count": 520,
+                    "following_count": 490,
+                    "tweet_count": 275,
+                    "listed_count": 15
                 }
             },
             {
                 "id": "333444555",
                 "name": "Eve Wilson",
                 "username": "eve",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=33",
                 "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
                 "public_metrics": {
-                    "followers_count": 2100,
-                    "following_count": 600,
-                    "tweet_count": 1500,
-                    "listed_count": 35
+                    "followers_count": 380,
+                    "following_count": 340,
+                    "tweet_count": 210,
+                    "listed_count": 10
                 }
             }
         ]
@@ -394,13 +394,13 @@ async def get_demo_mutuals(
                 "id": "555666777",
                 "name": "Charlie Brown",
                 "username": "charlie",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=12",
                 "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
                 "public_metrics": {
-                    "followers_count": 5600,
-                    "following_count": 1200,
-                    "tweet_count": 8900,
-                    "listed_count": 120
+                    "followers_count": 650,
+                    "following_count": 580,
+                    "tweet_count": 420,
+                    "listed_count": 18
                 }
             }
         ]
@@ -410,7 +410,7 @@ async def get_demo_mutuals(
         "user2": demo_users[user2_lower],
         "mutuals": mutual_users,
         "mutual_count": len(mutual_users),
-        "note": "This is demo/mock data for testing purposes. No Twitter API calls were made."
+        "note": "This is demo/mock data for testing purposes."
     }
 
 
