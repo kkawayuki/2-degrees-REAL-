@@ -10,6 +10,7 @@ function App() {
 	const [showUniverse, setShowUniverse] = useState(false);
 	const [isTransitioningToUniverse, setIsTransitioningToUniverse] = useState(false);
 	const fixedStarsRef = useRef(null);
+	const [shootingStars, setShootingStars] = useState([]);
 
 	// Exact star positions from SVG (in SVG coordinates: 1280x832) - same as landing page
 	// Using tytle.svg path for all large stars
@@ -152,6 +153,49 @@ function App() {
 		});
 	}, [tytlePath, starPositions]);
 
+	// Create shooting stars (no messages) from top right to bottom left
+	useEffect(() => {
+		if (showLandingPage || isTransitioning) return; // Only show on main page
+
+		const createShootingStar = () => {
+			// Start from top right, move diagonally to bottom left
+			const startX = window.innerWidth + 50; // Start right of viewport
+			const startY = -50; // Start above viewport (top right)
+			const endX = -100; // End left of viewport
+			const endY = window.innerHeight + 100; // End below viewport (bottom left)
+
+			// Calculate angle for the trail (diagonal movement from top-right to bottom-left)
+			const dx = endX - startX;
+			const dy = endY - startY;
+			const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+			const id = Date.now() + Math.random();
+			const newStar = {
+				id,
+				startX,
+				startY,
+				endX,
+				endY,
+				angle,
+			};
+
+			setShootingStars(prev => [...prev, newStar]);
+
+			// Remove star after animation completes (6 seconds)
+			setTimeout(() => {
+				setShootingStars(prev => prev.filter(star => star.id !== id));
+			}, 6000);
+		};
+
+		// Create first shooting star immediately
+		createShootingStar();
+
+		// Then create one every 5 seconds
+		const interval = setInterval(createShootingStar, 5000);
+
+		return () => clearInterval(interval);
+	}, [showLandingPage, isTransitioning]);
+
 	const handleGetStarted = () => {
 		setIsTransitioning(true);
 		setTimeout(() => {
@@ -183,9 +227,28 @@ function App() {
 				{/* Stars layer - scrolls with this page */}
 				<div className="main-page-stars" ref={fixedStarsRef}></div>
 				
+				{/* Shooting stars (no messages) from top right to bottom left */}
+				{shootingStars.map((star) => (
+					<div
+						key={star.id}
+						className="main-shooting-star-container"
+						style={{
+							'--start-x': `${star.startX}px`,
+							'--start-y': `${star.startY}px`,
+							'--end-x': `${star.endX}px`,
+							'--end-y': `${star.endY}px`,
+							'--angle': `${star.angle}deg`,
+						}}
+					>
+						<div className="main-shooting-star">
+							<div className="main-shooting-star-trail"></div>
+						</div>
+					</div>
+				))}
+				
 				<div className="landing-page">
 					<div className="content-group">
-						<h1 className="headline">2ND DEGREE</h1>
+						<h1 className="headline">Shared Sky</h1>
 						<img src="/tytle.svg" alt="Star" className="star-tytle" />
 						<img src="/tytle.svg" alt="Star" className="star-n" />
 						<div className="button-group">

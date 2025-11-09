@@ -226,3 +226,84 @@ div.star-large {
 		bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh);
 	}
 }
+
+/* Shooting stars with messages */
+.shooting-star-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+	z-index: 5;
+	transform: translate(var(--start-x, -50px), var(--start-y, -50px));
+	animation: shootStar 6s linear forwards;
+}
+
+@keyframes shootStar {
+	0% {
+		transform: translate(var(--start-x, -50px), var(--start-y, -50px));
+		opacity: 0;
+	}
+	5% {
+		opacity: 1;
+	}
+	95% {
+		opacity: 1;
+	}
+	100% {
+		transform: translate(var(--end-x), var(--end-y));
+		opacity: 0;
+	}
+}
+
+.shooting-star {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 8px;
+	height: 8px;
+	background: #ffffff;
+	border-radius: 50%;
+	box-shadow: 
+		0 0 20px rgba(255, 255, 255, 1),
+		0 0 40px rgba(141, 195, 255, 0.8),
+		0 0 60px rgba(141, 195, 255, 0.6);
+	transform: translate(-50%, -50%);
+}
+
+.shooting-star-trail {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 120px;
+	height: 2px;
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(255, 255, 255, 0.3) 30%,
+		rgba(141, 195, 255, 0.6) 70%,
+		rgba(141, 195, 255, 0.9) 100%
+	);
+	transform: translate(-50%, -50%) rotate(var(--angle, -45deg));
+	transform-origin: left center;
+	box-shadow: 0 0 10px rgba(141, 195, 255, 0.5);
+}
+
+.shooting-star-message {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: #ffffff;
+	font-family: "Roboto Mono", monospace;
+	font-weight: 400;
+	font-size: 14px;
+	white-space: nowrap;
+	text-shadow: 
+		0 0 10px rgba(255, 255, 255, 0.8),
+		0 0 20px rgba(141, 195, 255, 0.6),
+		0 2px 4px rgba(0, 0, 0, 0.3);
+	transform: translate(-50%, calc(-100% - 20px));
+	pointer-events: none;
+	opacity: 0.9;
+}

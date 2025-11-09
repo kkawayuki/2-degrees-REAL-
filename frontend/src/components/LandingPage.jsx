@@ -1,6 +1,40 @@
 import { useEffect, useRef, useState } from "react";
 import "./LandingPage.css";
 
+// Array of common internet phrases
+const casualMessages = [
+	"no cap",
+	"that's fire 🔥",
+	"fr fr",
+	"slay",
+	"periodt",
+	"that's valid",
+	"mood",
+	"facts",
+	"based",
+	"this hits different",
+	"vibe check",
+	"say less",
+	"bet",
+	"lowkey",
+	"highkey",
+	"it's giving",
+	"not me",
+	"bestie",
+	"slaps",
+	"go off",
+	"iconic",
+	"stan",
+	"no notes",
+	"chef's kiss 👌",
+	"that's the tea",
+	"spill the tea",
+	"main character energy",
+	"plot twist",
+	"we love to see it",
+	"we don't deserve this"
+];
+
 function LandingPage({ onTelescopeClick, showTelescopeState }) {
 	const earthRef = useRef(null);
 	const sceneRef = useRef(null);
@@ -12,6 +46,7 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 	const [initialRotation, setInitialRotation] = useState(0);
 	const [rotation, setRotation] = useState(0);
 	const [currentRotation, setCurrentRotation] = useState(0);
+	const [shootingStars, setShootingStars] = useState([]);
 
 	// Automatic rotation animation
 	useEffect(() => {
@@ -256,6 +291,50 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 		});
 	}, []);
 
+	// Create shooting stars with messages
+	useEffect(() => {
+		const createShootingStar = () => {
+			const message = casualMessages[Math.floor(Math.random() * casualMessages.length)];
+			
+			// Start from top left corner, move diagonally down-right
+			const startX = -50; // Start left of viewport
+			const startY = -50; // Start above viewport (top left)
+			const endX = window.innerWidth + 100; // End off right edge
+			const endY = window.innerHeight + 100; // End below viewport (bottom right)
+
+			// Calculate angle for the trail (diagonal movement)
+			const dx = endX - startX;
+			const dy = endY - startY;
+			const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+			const id = Date.now() + Math.random();
+			const newStar = {
+				id,
+				message,
+				startX,
+				startY,
+				endX,
+				endY,
+				angle,
+			};
+
+			setShootingStars(prev => [...prev, newStar]);
+
+			// Remove star after animation completes (6 seconds - 50% slower)
+			setTimeout(() => {
+				setShootingStars(prev => prev.filter(star => star.id !== id));
+			}, 6000);
+		};
+
+		// Create first shooting star immediately
+		createShootingStar();
+
+		// Then create one every 5 seconds
+		const interval = setInterval(createShootingStar, 5000);
+
+		return () => clearInterval(interval);
+	}, []);
+
 	return (
 		<div 
 			className="landing-page"
@@ -306,6 +385,26 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 					</defs>
 				</svg>
 			</button>
+
+			{/* Shooting stars with messages */}
+			{shootingStars.map((star) => (
+				<div
+					key={star.id}
+					className="shooting-star-container"
+					style={{
+						'--start-x': `${star.startX}px`,
+						'--start-y': `${star.startY}px`,
+						'--end-x': `${star.endX}px`,
+						'--end-y': `${star.endY}px`,
+						'--angle': `${star.angle}deg`,
+					}}
+				>
+					<div className="shooting-star">
+						<div className="shooting-star-trail"></div>
+					</div>
+					<div className="shooting-star-message">{star.message}</div>
+				</div>
+			))}
 		</div>
 	);
 }
