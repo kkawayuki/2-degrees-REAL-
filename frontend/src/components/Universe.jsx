@@ -2,47 +2,38 @@ import { useState, useMemo } from "react";
 import "./Universe.css";
 import friendsData from "../data/friends.json";
 
-function Universe() {
+function Universe({ onReturnClick }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 	const [tooltipBelow, setTooltipBelow] = useState(false);
 
-	// Fixed star positions to match the design
-	const starPositions = useMemo(() => [
-		// Large stars (degree 1)
-		{ top: '25%', left: '8%', size: 45 },
-		{ top: '20%', left: '25%', size: 55 },
-		{ top: '21%', left: '48%', size: 40 },
-		{ top: '17%', left: '73%', size: 50 },
-		{ top: '8%', left: '89%', size: 42 },
-		{ top: '47%', left: '10%', size: 52 },
-		{ top: '53%', left: '43%', size: 58 },
-		{ top: '48%', left: '68%', size: 48 },
-		
-		// Medium stars (degree 2)
-		{ top: '30%', left: '18%', size: 32 },
-		{ top: '46%', left: '57%', size: 35 },
-		{ top: '40%', left: '82%', size: 30 },
-		{ top: '28%', left: '92%', size: 38 },
-		
-		// Small stars (degree 3+)
-		{ top: '14%', left: '13%', size: 4 },
-		{ top: '18%', left: '62%', size: 4 },
-		{ top: '36%', left: '45%', size: 4 },
-		{ top: '56%', left: '18%', size: 4 },
-		{ top: '61%', left: '89%', size: 4 },
-		{ top: '5%', left: '28%', size: 4 },
-		{ top: '37%', left: '32%', size: 4 },
-		{ top: '61%', left: '5%', size: 4 },
-		{ top: '84%', left: '89%', size: 4 },
-		{ top: '90%', left: '45%', size: 4 },
-	], []);
-
-	// Map friends to fixed star positions
+	// Generate stars procedurally based on friends data
+	// Degree determines size: degree 1 = largest, 2 = medium, 3+ = smallest
 	const stars = useMemo(() => {
-		return friendsData.slice(0, starPositions.length).map((friend, index) => {
-			const position = starPositions[index];
-			const isLarge = position.size > 4;
+		return friendsData.map((friend, index) => {
+			// Determine star size based on degree
+			let size;
+			let isLarge;
+			
+			if (friend.degree === 1) {
+				// Largest stars for degree 1
+				size = 40 + Math.random() * 20; // 40-60px
+				isLarge = true;
+			} else if (friend.degree === 2) {
+				// Medium stars for degree 2
+				size = 25 + Math.random() * 15; // 25-40px
+				isLarge = true;
+			} else {
+				// Small dot stars for degree 3+
+				size = 4;
+				isLarge = false;
+			}
+
+			// Generate random position with margin to avoid edges and Return button
+			const margin = 8; // 8% margin from edges
+			const bottomMargin = 25; // Extra margin from bottom for Return button
+			const topPercent = Math.random() * (100 - margin * 2 - bottomMargin) + margin;
+			const leftPercent = Math.random() * (100 - margin * 2) + margin;
 			
 			// Calculate years based on degree (lower degree = more years)
 			let years;
@@ -56,14 +47,14 @@ function Universe() {
 			
 			return {
 				friend,
-				size: position.size,
+				size,
 				isLarge,
-				top: position.top,
-				left: position.left,
+				top: `${topPercent}%`,
+				left: `${leftPercent}%`,
 				years,
 			};
 		});
-	}, [starPositions]);
+	}, []);
 
 	const handleStarHover = (friend, event) => {
 		setHoveredFriend(friend);
@@ -201,7 +192,7 @@ function Universe() {
 			)}
 
 			{/* Return button */}
-			<div className="return-button-container">
+			<div className="return-button-container" onClick={onReturnClick}>
 				<div className="return-button-circle">
 					<div className="return-button-icon">
 						<svg width="59" height="59" viewBox="0 0 24 24" fill="none">

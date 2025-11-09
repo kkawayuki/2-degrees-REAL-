@@ -169,12 +169,20 @@ function App() {
 		}, 50); // Small delay to ensure DOM update
 	};
 
+	const handleReturnClick = () => {
+		setIsTransitioningToUniverse(false);
+		setTimeout(() => {
+			setShowUniverse(false);
+			setShowIntermediateState(false);
+		}, 1200); // Match transition duration
+	};
+
 	return (
 		<div className="app-container">
-			{/* Fixed stars layer - stays in place during transition */}
-			<div className="fixed-stars" ref={fixedStarsRef}></div>
-			
 			<div className={`page-wrapper main-page ${isTransitioning || showLandingPage ? 'slide-out' : ''}`}>
+				{/* Stars layer - scrolls with this page */}
+				<div className="main-page-stars" ref={fixedStarsRef}></div>
+				
 				<div className="landing-page">
 					<div className="content-group">
 						<h1 className="headline">2ND DEGREE</h1>
@@ -196,8 +204,8 @@ function App() {
 			</div>
 			
 			{showUniverse && (
-				<div className={`page-wrapper universe-page-wrapper ${isTransitioningToUniverse ? 'slide-in' : ''}`}>
-					<Universe />
+				<div className={`page-wrapper universe-page-wrapper ${isTransitioningToUniverse ? 'slide-in' : 'slide-out'}`}>
+					<Universe onReturnClick={handleReturnClick} />
 				</div>
 			)}
 		</div>

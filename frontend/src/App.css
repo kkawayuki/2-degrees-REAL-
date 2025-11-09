@@ -5,33 +5,30 @@
 	overflow: hidden;
 	transform: translateZ(0);
 	-webkit-transform: translateZ(0);
-	background: 
-		radial-gradient(
-			ellipse 800% 1200% at 52.5% 2.2%,
-			rgba(41, 47, 111, 0.5) 0%,
-			rgba(18, 15, 34, 0.35) 50%,
-			transparent 100%
-		),
-		#000000;
+	background: radial-gradient(
+		50% 50% at 74% 51%,
+		rgb(41, 47, 111) 0%,
+		rgb(18, 15, 34) 100%
+	);
 }
 
-.fixed-stars {
-	position: fixed;
+.main-page-stars {
+	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
-	z-index: 3;
+	z-index: 1;
 	overflow: hidden;
 }
 
-.fixed-stars .star {
+.main-page-stars .star {
 	position: absolute;
 	transform: translate(-50%, -50%);
 }
 
-.fixed-stars .star-small {
+.main-page-stars .star-small {
 	width: 4px;
 	height: 4px;
 	border-radius: 50%;
@@ -39,12 +36,12 @@
 	filter: drop-shadow(0 0 6.9px rgba(255, 255, 255, 1));
 }
 
-.fixed-stars svg.star-large {
+.main-page-stars svg.star-large {
 	display: block;
 	background: transparent;
 }
 
-.fixed-stars div.star-large {
+.main-page-stars div.star-large {
 	width: 20px;
 	height: 20px;
 	background: white;
@@ -69,6 +66,7 @@
 .main-page {
 	transform: translateY(0);
 	z-index: 2;
+	position: relative;
 }
 
 .main-page.slide-out {
@@ -98,6 +96,10 @@
 	transform: translateY(0);
 }
 
+.universe-page-wrapper.slide-out {
+	transform: translateY(-100%);
+}
+
 .landing-page {
 	overflow: hidden;
 	background: transparent; /* Background moved to .app-container */
@@ -108,6 +110,7 @@
 	position: relative;
 	border: none;
 	outline: none;
+	z-index: 2;
 }
 
 .star-dot {
