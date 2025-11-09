@@ -1,47 +1,30 @@
 import { useState, useEffect, useMemo } from "react";
 import "./Universe.css";
 
-function Universe({ onReturnClick, firstUser, secondUser }) {
+function Universe({ onReturnClick }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 	const [tooltipBelow, setTooltipBelow] = useState(false);
 	const [friendsData, setFriendsData] = useState([]);
-	const [loading, setLoading] = useState(true);
 
-	// Fetch mutuals data from API
+	// Fetch friends data from API
 	useEffect(() => {
-		const fetchMutuals = async () => {
-			if (!firstUser || !secondUser) return;
-			
-			setLoading(true);
+		const fetchFriends = async () => {
 			try {
-				const response = await fetch(`/api/demo/mutuals?user1=${firstUser}&user2=${secondUser}`);
+				const response = await fetch('/api/demo/friends');
 				if (response.ok) {
 					const data = await response.json();
-					// Transform mutuals data to match the friends format with degrees
-					// All mutuals are 2nd degree connections
-					const mutualsWithDegrees = data.mutuals.map((mutual, index) => ({
-						username: mutual.username,
-						profilePicture: mutual.profile_image_url,
-						bio: mutual.description || "",
-						degree: 2, // All mutuals are 2nd degree
-						...mutual // Include all other data
-					}));
-					setFriendsData(mutualsWithDegrees);
+					setFriendsData(data);
 				} else {
-					console.error('Failed to fetch mutuals data');
-					setFriendsData([]);
+					console.error('Failed to fetch friends data');
 				}
 			} catch (error) {
-				console.error('Error fetching mutuals:', error);
-				setFriendsData([]);
-			} finally {
-				setLoading(false);
+				console.error('Error fetching friends:', error);
 			}
 		};
 
-		fetchMutuals();
-	}, [firstUser, secondUser]);
+		fetchFriends();
+	}, []);
 
 	// Generate stars procedurally based on friends data
 	// Degree determines size: degree 1 = largest, 2 = medium, 3+ = smallest
@@ -137,27 +120,6 @@ function Universe({ onReturnClick, firstUser, secondUser }) {
 		return star ? star.years : 5;
 	};
 
-	// Format degree text for display
-	const getDegreeText = (degree) => {
-		if (degree === 1) {
-			return "1st Degree Connection";
-		} else if (degree === 2) {
-			return "2nd Degree Connection";
-		} else if (degree === 3) {
-			return "3rd Degree Connection";
-		} else {
-			return `${degree}th Degree Connection`;
-		}
-	};
-
-	if (loading) {
-		return (
-			<div className="universe-page">
-				<div className="loading-message">Loading mutual connections...</div>
-			</div>
-		);
-	}
-
 	return (
 		<div className="universe-page">
 			{stars.map((star, index) => 
@@ -225,7 +187,7 @@ function Universe({ onReturnClick, firstUser, secondUser }) {
 								<div className="tooltip-quote">"{hoveredFriend.bio}"</div>
 								<div className="tooltip-connection">
 									<div className="connection-icon"></div>
-									<span>{getDegreeText(hoveredFriend.degree)}</span>
+									<span>Strong Connection</span>
 								</div>
 								<div className="tooltip-duration">
 									<svg width="16" height="16" viewBox="0 0 24 24" fill="none">

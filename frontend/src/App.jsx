@@ -9,9 +9,6 @@ function App() {
 	const [showIntermediateState, setShowIntermediateState] = useState(false);
 	const [showUniverse, setShowUniverse] = useState(false);
 	const [isTransitioningToUniverse, setIsTransitioningToUniverse] = useState(false);
-	const [firstUser, setFirstUser] = useState("");
-	const [secondUser, setSecondUser] = useState("");
-	const [firstUserError, setFirstUserError] = useState("");
 	const fixedStarsRef = useRef(null);
 
 	// Exact star positions from SVG (in SVG coordinates: 1280x832) - same as landing page
@@ -155,50 +152,21 @@ function App() {
 		});
 	}, [tytlePath, starPositions]);
 
-	// Demo users available
-	const demoUsers = ['alice', 'bob', 'charlie', 'diana', 'eve'];
-
-	// Validate username matches demo users
-	const validateUsername = (username) => {
-		if (!username || username.trim() === "") {
-			return "Username cannot be empty";
-		}
-		const trimmed = username.trim().toLowerCase();
-		if (!demoUsers.includes(trimmed)) {
-			return `Username must be one of: ${demoUsers.join(', ')}`;
-		}
-		return null; // Valid
-	};
-
-	const handleFirstUserSubmit = (e) => {
-		e.preventDefault();
-		const username = e.target.username.value.trim();
-		const error = validateUsername(username);
-		
-		if (error) {
-			setFirstUserError(error);
-			return;
-		}
-		
-		setFirstUserError("");
-		setFirstUser(username.toLowerCase()); // Store in lowercase to match demo users
+	const handleGetStarted = () => {
 		setIsTransitioning(true);
 		setTimeout(() => {
 			setShowLandingPage(true);
 		}, 1200); // Match transition duration
 	};
 
-	const handleSecondUserSubmit = (username) => {
-		if (username) {
-			setSecondUser(username);
-			setShowIntermediateState(true);
-			// First, add the universe page to DOM
-			setShowUniverse(true);
-			// Then trigger the transition after a brief delay
-			setTimeout(() => {
-				setIsTransitioningToUniverse(true);
-			}, 50); // Small delay to ensure DOM update
-		}
+	const handleTelescopeClick = () => {
+		setShowIntermediateState(true);
+		// First, add the universe page to DOM
+		setShowUniverse(true);
+		// Then trigger the transition after a brief delay
+		setTimeout(() => {
+			setIsTransitioningToUniverse(true);
+		}, 50); // Small delay to ensure DOM update
 	};
 
 	const handleReturnClick = () => {
@@ -220,40 +188,24 @@ function App() {
 						<h1 className="headline">2ND DEGREE</h1>
 						<img src="/tytle.svg" alt="Star" className="star-tytle" />
 						<img src="/tytle.svg" alt="Star" className="star-n" />
-						<form className="button-group" onSubmit={handleFirstUserSubmit}>
+						<div className="button-group">
 							<div className="button-bg"></div>
-							<input 
-								type="text" 
-								name="username"
-								className={`cta-input ${firstUserError ? 'input-error' : ''}`}
-								placeholder="enter a twitter handle (no @)"
-								onChange={(e) => {
-									if (firstUserError) {
-										setFirstUserError("");
-									}
-								}}
-								required
-							/>
-							<button type="submit" className="cta-button-submit">→</button>
-							{firstUserError && (
-								<div className="input-error-message">{firstUserError}</div>
-							)}
-						</form>
+							<button className="cta-button" onClick={handleGetStarted}>Get started →</button>
+						</div>
 					</div>
 				</div>
 			</div>
 			
 			<div className={`page-wrapper landing-page-wrapper ${isTransitioning || showLandingPage ? 'slide-in' : ''} ${isTransitioningToUniverse ? 'slide-out' : ''}`}>
 				<LandingPage 
-					onSecondUserSubmit={handleSecondUserSubmit} 
-					showTelescopeState={showIntermediateState}
-					firstUser={firstUser}
+					onTelescopeClick={handleTelescopeClick} 
+					showTelescopeState={showIntermediateState} 
 				/>
 			</div>
 			
 			{showUniverse && (
 				<div className={`page-wrapper universe-page-wrapper ${isTransitioningToUniverse ? 'slide-in' : 'slide-out'}`}>
-					<Universe onReturnClick={handleReturnClick} firstUser={firstUser} secondUser={secondUser} />
+					<Universe onReturnClick={handleReturnClick} />
 				</div>
 			)}
 		</div>
