@@ -23,6 +23,13 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing, i
 		if (isClosing) {
 			// Hide content immediately when closing
 			setShowContent(false);
+			// Keep globe visible for fade-out transition
+			// The fade-out class will handle the opacity transition
+		} else {
+			// Reset showGlobe when not closing (for next open)
+			if (!showGlobe) {
+				setShowGlobe(true);
+			}
 		}
 	}, [isClosing]);
 
@@ -42,7 +49,7 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing, i
 				<div className="globe-side">
 					{showGlobe && (
 						<div 
-							className="globe-container"
+							className={`globe-container ${isClosing ? 'globe-fade-out' : ''}`}
 							style={{
 								'--start-x': `${starPosition.x}px`,
 								'--start-y': `${starPosition.y}px`,
