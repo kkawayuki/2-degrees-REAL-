@@ -1,0 +1,322 @@
+.profile-page-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Split screen layout */
+.split-screen-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+
+.globe-side {
+	flex: 0 0 40%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+}
+
+.content-side {
+	flex: 0 0 60%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+	overflow-y: auto;
+}
+
+/* Globe animation on left side */
+.globe-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 40vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.globe-image-expanding {
+	width: 500px;
+	height: 500px;
+	border-radius: 50%;
+	animation: globeGrowAndMove 2.2s linear forwards;
+	position: absolute;
+	left: var(--start-x);
+	top: var(--start-y);
+	transform: translate(-50%, -50%) scale(0.1);
+	will-change: transform, opacity;
+	backface-visibility: hidden;
+	transform-origin: center center;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
+
+@keyframes globeGrowAndMove {
+	0% {
+		opacity: 0.5;
+		transform: 
+			translate(
+				0px,
+				0px
+			)
+			translate(-50%, -50%)
+			scale(0.1);
+	}
+	50% {
+		opacity: 0.8;
+		transform: 
+			translate(
+				calc((var(--planet-target-x, 50vw) - var(--start-x)) * 0.5),
+				calc((var(--planet-target-y, 50vh) - var(--start-y)) * 0.5)
+			)
+			translate(-50%, -50%)
+			scale(0.55);
+	}
+	100% {
+		opacity: 1;
+		transform: 
+			translate(
+				calc(var(--planet-target-x, 50vw) - var(--start-x)),
+				calc(var(--planet-target-y, 50vh) - var(--start-y))
+			)
+			translate(-50%, -50%)
+			scale(1);
+	}
+}
+
+/* Profile content on right side */
+.profile-page-content {
+	width: 100%;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+	from {
+		opacity: 0;
+		transform: translateX(50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.profile-card {
+	background: rgba(40, 48, 85, 0.95);
+	border: 2px solid rgba(80, 90, 130, 0.6);
+	border-radius: 24px;
+	padding: 35px;
+	max-width: 650px;
+	width: 100%;
+	box-shadow: 0 15px 60px rgba(0, 0, 0, 0.6);
+	position: relative;
+}
+
+.profile-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.profile-name {
+	font-family: "Courier New", monospace;
+	font-size: 28px;
+	font-weight: 700;
+	color: white;
+	margin: 0;
+	letter-spacing: 0.5px;
+}
+
+.social-icons {
+	display: flex;
+	gap: 12px;
+}
+
+.social-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+	transform: scale(1.1);
+}
+
+.profile-main {
+	display: flex;
+	gap: 40px;
+}
+
+.profile-left {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
+}
+
+.top-mutuals {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.mutual-avatars {
+	display: flex;
+	position: relative;
+}
+
+.mutual-avatar {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 3px solid rgba(30, 35, 60, 1);
+	margin-left: -15px;
+}
+
+.mutual-avatar:first-child {
+	margin-left: 0;
+}
+
+.mutuals-label {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+	font-family: "Courier New", monospace;
+}
+
+.profile-images {
+	display: flex;
+	gap: 15px;
+}
+
+.memory-image {
+	width: 110px;
+	height: 110px;
+	border-radius: 10px;
+	object-fit: cover;
+	border: 2px solid rgba(100, 120, 180, 0.3);
+	transition: transform 0.3s ease;
+}
+
+.memory-image:hover {
+	transform: scale(1.05);
+}
+
+.profile-quote {
+	background: rgba(50, 55, 80, 0.55);
+	padding: 20px;
+	border-radius: 16px;
+	border: 1px solid rgba(120, 140, 200, 0.35);
+	width: 230px;
+	min-height: 110px;
+	display: flex;
+	align-items: center;
+}
+
+.profile-quote p {
+	color: rgba(255, 255, 255, 0.92);
+	font-size: 18px;
+	margin: 0;
+	font-style: normal;
+	line-height: 1.4;
+	letter-spacing: 0.3px;
+	font-family: Georgia, serif;
+}
+
+.now-playing {
+	background: rgba(40, 45, 70, 0.8);
+	padding: 15px;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	border: 1px solid rgba(100, 120, 180, 0.3);
+}
+
+.album-art {
+	width: 60px;
+	height: 60px;
+	border-radius: 8px;
+	object-fit: cover;
+}
+
+.song-info {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex: 1;
+}
+
+.song-icon {
+	font-size: 20px;
+	color: #1DB954;
+}
+
+.song-title {
+	color: white;
+	font-weight: 600;
+	font-size: 14px;
+	font-family: "Courier New", monospace;
+}
+
+.song-artist {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 12px;
+	font-family: "Courier New", monospace;
+}
+
+.profile-right {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.profile-avatar {
+	width: 180px;
+	height: 180px;
+	border-radius: 16px;
+	object-fit: cover;
+	border: 3px solid rgba(100, 120, 180, 0.5);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.close-profile-button {
+	margin-top: 30px;
+	width: 100%;
+	background: rgba(100, 120, 180, 0.3);
+	border: 2px solid rgba(100, 120, 180, 0.5);
+	color: white;
+	padding: 14px 24px;
+	border-radius: 12px;
+	font-family: "Courier New", monospace;
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.close-profile-button:hover {
+	background: rgba(100, 120, 180, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
