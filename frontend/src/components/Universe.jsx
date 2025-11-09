@@ -312,10 +312,11 @@ function Universe({ onReturnClick }) {
 			)}
 
 			{/* Return button */}
-			<div className="return-button-container" onClick={(e) => {
-				e.stopPropagation();
-				onReturnClick();
-			}}>
+			{!selectedFriend && (
+				<div className="return-button-container" onClick={(e) => {
+					e.stopPropagation();
+					onReturnClick();
+				}}>
 				<div className="return-button-circle">
 					<div className="return-button-icon">
 						<svg width="59" height="59" viewBox="0 0 24 24" fill="none">
@@ -325,6 +326,7 @@ function Universe({ onReturnClick }) {
 				</div>
 				<span className="return-text">Return</span>
 			</div>
+			)}
 
 			{/* Profile page overlay */}
 			{selectedFriend && (

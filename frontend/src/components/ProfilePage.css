@@ -10,6 +10,39 @@
 	justify-content: center;
 }
 
+/* Return button - top left */
+.profile-return-button {
+	position: fixed;
+	top: 30px;
+	left: 30px;
+	z-index: 1002;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 0;
+	transition: transform 0.2s ease;
+}
+
+.profile-return-button:hover {
+	transform: scale(1.05);
+}
+
+.return-arrow-icon {
+	width: 48px;
+	height: 48px;
+	display: block;
+}
+
+.return-text-image {
+	width: 48px;
+	height: auto;
+	display: block;
+}
+
 /* Split screen layout */
 .split-screen-container {
 	display: flex;
@@ -119,40 +152,61 @@
 }
 
 .profile-card {
-	background: rgba(40, 48, 85, 0.95);
-	border: 2px solid rgba(80, 90, 130, 0.6);
-	border-radius: 24px;
-	padding: 35px;
-	max-width: 650px;
-	width: 100%;
-	box-shadow: 0 15px 60px rgba(0, 0, 0, 0.6);
+	background-color: #141836b2;
+	border-radius: 20px;
+	border: 4px solid #ffffff40;
+	box-shadow: 0px 0px 4px #ffffffb5;
+	width: 646px;
+	height: 536px;
 	position: relative;
+	padding: 20px;
+	box-sizing: border-box;
 }
 
-.profile-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 30px;
+/* Grid layout */
+.profile-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: auto auto auto 1fr;
+	gap: 20px;
+	width: 100%;
+	height: 100%;
+	align-content: center;
 }
 
-.profile-name {
+/* Grid items */
+.grid-name {
+	grid-column: 1;
+	grid-row: 1;
 	font-family: "Courier New", monospace;
-	font-size: 28px;
+	font-size: 36px;
 	font-weight: 700;
 	color: white;
 	margin: 0;
 	letter-spacing: 0.5px;
+	align-self: center;
 }
 
-.social-icons {
+.grid-social-icons {
+	grid-column: 3;
+	grid-row: 2;
 	display: flex;
+	gap: 10px;
+	justify-self: end;
+	align-self: center;
+}
+
+.grid-mutuals {
+	grid-column: 1 / 3;
+	grid-row: 2;
+	display: flex;
+	align-items: center;
 	gap: 12px;
 }
 
 .social-icon {
-	width: 40px;
-	height: 40px;
+	width: 44px;
+	height: 44px;
 	border-radius: 8px;
 	cursor: pointer;
 	transition: transform 0.2s ease;
@@ -162,23 +216,6 @@
 	transform: scale(1.1);
 }
 
-.profile-main {
-	display: flex;
-	gap: 40px;
-}
-
-.profile-left {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 25px;
-}
-
-.top-mutuals {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-}
 
 .mutual-avatars {
 	display: flex;
@@ -186,11 +223,11 @@
 }
 
 .mutual-avatar {
-	width: 50px;
-	height: 50px;
+	width: 36px;
+	height: 36px;
 	border-radius: 50%;
-	border: 3px solid rgba(30, 35, 60, 1);
-	margin-left: -15px;
+	border: 2px solid rgba(30, 35, 60, 1);
+	margin-left: -10px;
 }
 
 .mutual-avatar:first-child {
@@ -199,63 +236,100 @@
 
 .mutuals-label {
 	color: rgba(255, 255, 255, 0.7);
-	font-size: 14px;
+	font-size: 12px;
 	font-family: "Courier New", monospace;
 }
 
-.profile-images {
-	display: flex;
-	gap: 15px;
-}
-
-.memory-image {
-	width: 110px;
-	height: 110px;
-	border-radius: 10px;
+/* Grid images */
+.grid-image {
+	width: 100%;
+	height: 100%;
 	object-fit: cover;
-	border: 2px solid rgba(100, 120, 180, 0.3);
-	transition: transform 0.3s ease;
+	border-radius: 8px;
 }
 
-.memory-image:hover {
-	transform: scale(1.05);
+.grid-chancy,
+.grid-group {
+	border: none;
 }
 
-.profile-quote {
-	background: rgba(50, 55, 80, 0.55);
-	padding: 20px;
-	border-radius: 16px;
-	border: 1px solid rgba(120, 140, 200, 0.35);
-	width: 230px;
-	min-height: 110px;
+.grid-chancy {
+	grid-column: 1;
+	grid-row: 3;
+}
+
+.grid-group {
+	grid-column: 2;
+	grid-row: 3;
+}
+
+.grid-quote {
+	grid-column: 3;
+	grid-row: 3;
+	display: flex;
+	align-items: stretch;
+}
+
+.grid-music {
+	grid-column: 1 / 3;
+	grid-row: 4;
 	display: flex;
 	align-items: center;
 }
 
-.profile-quote p {
-	color: rgba(255, 255, 255, 0.92);
-	font-size: 18px;
-	margin: 0;
-	font-style: normal;
-	line-height: 1.4;
-	letter-spacing: 0.3px;
-	font-family: Georgia, serif;
+.grid-avatar {
+	grid-column: 3;
+	grid-row: 4;
+	width: auto !important;
+	height: auto !important;
+	max-width: 120px;
+	max-height: 120px;
+	align-self: end;
+	margin-bottom: 35px;
 }
 
 .now-playing {
-	background: rgba(40, 45, 70, 0.8);
-	padding: 15px;
-	border-radius: 12px;
+	background-color: #141836b2;
+	padding: 10px;
+	border-radius: 8px;
 	display: flex;
 	align-items: center;
-	gap: 15px;
+	gap: 10px;
 	border: 1px solid rgba(100, 120, 180, 0.3);
+	width: 100%;
+	height: fit-content;
 }
 
-.album-art {
-	width: 60px;
-	height: 60px;
+.profile-quote {
+	background-color: #141836b2;
+	padding: 12px;
 	border-radius: 8px;
+	border: 1px solid rgba(120, 140, 200, 0.3);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+}
+
+.profile-quote p {
+	color: white;
+	font-size: 13px;
+	margin: 0;
+	font-style: normal;
+	line-height: 1.3;
+	letter-spacing: 0.2px;
+	font-family: "Courier New", monospace;
+	font-weight: 700;
+	text-align: center;
+}
+
+
+.album-art {
+	width: 50px;
+	height: 50px;
+	border-radius: 6px;
 	object-fit: cover;
 }
 
@@ -267,56 +341,35 @@
 }
 
 .song-icon {
-	font-size: 20px;
+	font-size: 16px;
 	color: #1DB954;
 }
 
 .song-title {
 	color: white;
-	font-weight: 600;
-	font-size: 14px;
+	font-weight: 700;
+	font-size: 12px;
 	font-family: "Courier New", monospace;
 }
 
 .song-artist {
 	color: rgba(255, 255, 255, 0.6);
-	font-size: 12px;
+	font-size: 10px;
 	font-family: "Courier New", monospace;
 }
 
-.profile-right {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.profile-avatar {
-	width: 180px;
-	height: 180px;
-	border-radius: 16px;
-	object-fit: cover;
-	border: 3px solid rgba(100, 120, 180, 0.5);
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-.close-profile-button {
-	margin-top: 30px;
-	width: 100%;
-	background: rgba(100, 120, 180, 0.3);
-	border: 2px solid rgba(100, 120, 180, 0.5);
-	color: white;
-	padding: 14px 24px;
+.grid-avatar {
 	border-radius: 12px;
-	font-family: "Courier New", monospace;
-	font-size: 15px;
-	font-weight: 600;
-	cursor: pointer;
-	transition: all 0.3s ease;
+	border: 2px solid rgba(100, 120, 180, 0.5);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+	max-width: 120px;
+	max-height: 120px;
+	width: auto;
+	height: auto;
+	justify-self: center;
+	align-self: end;
+	margin-bottom: 35px;
+	object-fit: cover;
 }
 
-.close-profile-button:hover {
-	background: rgba(100, 120, 180, 0.5);
-	transform: translateY(-2px);
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
 

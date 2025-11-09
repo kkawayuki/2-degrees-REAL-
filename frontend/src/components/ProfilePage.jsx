@@ -21,6 +21,14 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 
 	return (
 		<div className="profile-page-overlay">
+			{/* Return button - top left */}
+			{showContent && (
+				<button className="profile-return-button" onClick={onClose}>
+					<img src="/fluent_arrow-left-12-filled.png" alt="Arrow" className="return-arrow-icon" />
+					<img src="/Return.png" alt="Return" className="return-text-image" />
+				</button>
+			)}
+
 			{/* Split screen container */}
 			<div className="split-screen-container">
 				{/* Left side - Globe animation */}
@@ -45,58 +53,53 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 					{showContent && (
 						<div className="profile-page-content">
 							<div className="profile-card">
-						<div className="profile-header">
-							<h1 className="profile-name">{friend.username}</h1>
-							<div className="social-icons">
-								<img src="/insta.png" alt="Instagram" className="social-icon" />
-								<img src="/x.png" alt="X" className="social-icon" />
-								<img src="/spotify.png" alt="Spotify" className="social-icon" />
-							</div>
-						</div>
-
-						<div className="profile-main">
-							<div className="profile-left">
-								<div className="top-mutuals">
-									<div className="mutual-avatars">
-										<img src="https://i.pravatar.cc/150?img=10" alt="Mutual 1" className="mutual-avatar" />
-										<img src="https://i.pravatar.cc/150?img=11" alt="Mutual 2" className="mutual-avatar" />
-										<img src="https://i.pravatar.cc/150?img=12" alt="Mutual 3" className="mutual-avatar" />
+								{/* Grid layout */}
+								<div className="profile-grid">
+									{/* Row 1: Name and Social icons */}
+									<h1 className="grid-name">{friend.username}</h1>
+									<div className="grid-social-icons">
+										<img src="/insta.png" alt="Instagram" className="social-icon" />
+										<img src="/x.png" alt="X" className="social-icon" />
+										<img src="/spotify.png" alt="Spotify" className="social-icon" />
 									</div>
-									<span className="mutuals-label">top mutuals</span>
-								</div>
 
-								<div className="profile-images">
-									<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop" alt="Memory 1" className="memory-image" />
-									<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200&h=200&fit=crop" alt="Memory 2" className="memory-image" />
-								</div>
+									{/* Row 2: Top mutuals */}
+									<div className="grid-mutuals">
+										<div className="mutual-avatars">
+											<img src="https://i.pravatar.cc/150?img=10" alt="Mutual 1" className="mutual-avatar" />
+											<img src="https://i.pravatar.cc/150?img=11" alt="Mutual 2" className="mutual-avatar" />
+											<img src="https://i.pravatar.cc/150?img=12" alt="Mutual 3" className="mutual-avatar" />
+										</div>
+										<span className="mutuals-label">top mutuals</span>
+									</div>
 
-								<div className="profile-quote">
-									<p>"{friend.bio}"</p>
-								</div>
-
-								<div className="now-playing">
-									<img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&h=100&fit=crop" alt="Album art" className="album-art" />
-									<div className="song-info">
-										<div className="song-icon">♫</div>
-										<div>
-											<div className="song-title">Ochos Rios</div>
-											<div className="song-artist">Daniel Caesar</div>
+									{/* Row 3: Images and Bio */}
+									<img src="/chancy.png" alt="Chancy" className="grid-image grid-chancy" />
+									<img src="/group picture.png" alt="Group" className="grid-image grid-group" />
+									<div className="grid-quote">
+										<div className="profile-quote">
+											<p>"{friend.bio}"</p>
 										</div>
 									</div>
+
+									{/* Row 4: Music and Avatar */}
+									<div className="grid-music">
+										<div className="now-playing">
+											<img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&h=100&fit=crop" alt="Album art" className="album-art" />
+											<div className="song-info">
+												<div className="song-icon">♫</div>
+												<div>
+													<div className="song-title">Ochos Rios</div>
+													<div className="song-artist">Daniel Caesar</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<img src={`https://i.pravatar.cc/300?img=${friend.username.length % 50}`} alt={friend.username} className="grid-image grid-avatar" />
 								</div>
 							</div>
-
-							<div className="profile-right">
-								<img src={friend.profilePicture} alt={friend.username} className="profile-avatar" />
-							</div>
 						</div>
-
-						<button className="close-profile-button" onClick={onClose}>
-							Back to Universe
-						</button>
-					</div>
-				</div>
-			)}
+					)}
 				</div>
 			</div>
 		</div>
