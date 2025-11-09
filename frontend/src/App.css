@@ -57,7 +57,7 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	transition: transform 0.8s ease-in-out;
+	transition: transform 1.2s ease-in-out;
 	border: none;
 	outline: none;
 	backface-visibility: hidden;
@@ -76,11 +76,25 @@
 }
 
 .landing-page-wrapper {
-	transform: translateY(99%); /* Adjusted for slight overlap */
+	transform: translateY(99%);
 	z-index: 1;
 }
 
 .landing-page-wrapper.slide-in {
+	transform: translateY(0);
+}
+
+.landing-page-wrapper.slide-out {
+	transform: translateY(100%);
+	z-index: 0;
+}
+
+.universe-page-wrapper {
+	transform: translateY(-100%);
+	z-index: 2;
+}
+
+.universe-page-wrapper.slide-in {
 	transform: translateY(0);
 }
 
