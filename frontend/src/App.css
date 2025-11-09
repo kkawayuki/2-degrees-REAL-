@@ -1,15 +1,99 @@
-.landing-page {
+.app-container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
 	overflow: hidden;
-	background: radial-gradient(
-		50% 50% at 74% 51%,
-		rgba(41, 47, 111, 1) 0%,
-		rgba(18, 15, 34, 1) 100%
-	);
+	transform: translateZ(0);
+	-webkit-transform: translateZ(0);
+	background: 
+		radial-gradient(
+			ellipse 800% 1200% at 52.5% 2.2%,
+			rgba(41, 47, 111, 0.5) 0%,
+			rgba(18, 15, 34, 0.35) 50%,
+			transparent 100%
+		),
+		#000000;
+}
+
+.fixed-stars {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	z-index: 3;
+	overflow: hidden;
+}
+
+.fixed-stars .star {
+	position: absolute;
+	transform: translate(-50%, -50%);
+}
+
+.fixed-stars .star-small {
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: white;
+	filter: drop-shadow(0 0 6.9px rgba(255, 255, 255, 1));
+}
+
+.fixed-stars svg.star-large {
+	display: block;
+	background: transparent;
+}
+
+.fixed-stars div.star-large {
+	width: 20px;
+	height: 20px;
+	background: white;
+	filter: drop-shadow(0 0 23.7px rgba(255, 255, 255, 0.49));
+}
+
+.page-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
+	transition: transform 0.8s ease-in-out;
+	border: none;
+	outline: none;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	will-change: transform;
+	background: transparent; /* Background moved to .app-container */
+}
+
+.main-page {
+	transform: translateY(0);
+	z-index: 2;
+}
+
+.main-page.slide-out {
+	transform: translateY(-100%);
+}
+
+.landing-page-wrapper {
+	transform: translateY(99%); /* Adjusted for slight overlap */
+	z-index: 1;
+}
+
+.landing-page-wrapper.slide-in {
+	transform: translateY(0);
+}
+
+.landing-page {
+	overflow: hidden;
+	background: transparent; /* Background moved to .app-container */
+	width: 100%;
+	height: 99%; /* Adjusted height for seamless transition */
 	min-width: 1280px;
 	min-height: 832px;
 	position: relative;
+	border: none;
+	outline: none;
 }
 
 .star-dot {
