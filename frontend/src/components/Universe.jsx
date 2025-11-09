@@ -1,15 +1,36 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./Universe.css";
-import friendsData from "../data/friends.json";
 
 function Universe({ onReturnClick }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 	const [tooltipBelow, setTooltipBelow] = useState(false);
+	const [friendsData, setFriendsData] = useState([]);
+
+	// Fetch friends data from API
+	useEffect(() => {
+		const fetchFriends = async () => {
+			try {
+				const response = await fetch('/api/demo/friends');
+				if (response.ok) {
+					const data = await response.json();
+					setFriendsData(data);
+				} else {
+					console.error('Failed to fetch friends data');
+				}
+			} catch (error) {
+				console.error('Error fetching friends:', error);
+			}
+		};
+
+		fetchFriends();
+	}, []);
 
 	// Generate stars procedurally based on friends data
 	// Degree determines size: degree 1 = largest, 2 = medium, 3+ = smallest
 	const stars = useMemo(() => {
+		if (!friendsData || friendsData.length === 0) return [];
+		
 		return friendsData.map((friend, index) => {
 			// Determine star size based on degree
 			let size;
@@ -54,7 +75,7 @@ function Universe({ onReturnClick }) {
 				years,
 			};
 		});
-	}, []);
+	}, [friendsData]);
 
 	const handleStarHover = (friend, event) => {
 		setHoveredFriend(friend);

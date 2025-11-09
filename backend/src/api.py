@@ -5,7 +5,7 @@ $ fastapi dev src/api.py
 """
 
 import random
-from typing import Dict
+from typing import Dict, List
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -169,8 +169,9 @@ async def get_demo_user(username: str) -> Dict:
             "id": "123456789",
             "name": "Alice Johnson",
             "username": "alice",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/1234567890/example1_normal.jpg",
-            "description": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
+            "profilePicture": "https://i.pravatar.cc/150?img=1",
+            "bio": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
+            "degree": 1,
             "public_metrics": {
                 "followers_count": 1250,
                 "following_count": 350,
@@ -182,8 +183,9 @@ async def get_demo_user(username: str) -> Dict:
             "id": "987654321",
             "name": "Bob Smith",
             "username": "bob",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/9876543210/example2_normal.jpg",
-            "description": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
+            "profilePicture": "https://i.pravatar.cc/150?img=2",
+            "bio": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
+            "degree": 1,
             "public_metrics": {
                 "followers_count": 890,
                 "following_count": 420,
@@ -195,8 +197,9 @@ async def get_demo_user(username: str) -> Dict:
             "id": "555666777",
             "name": "Charlie Brown",
             "username": "charlie",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
-            "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
+            "profilePicture": "https://i.pravatar.cc/150?img=3",
+            "bio": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
+            "degree": 2,
             "public_metrics": {
                 "followers_count": 5600,
                 "following_count": 1200,
@@ -208,8 +211,9 @@ async def get_demo_user(username: str) -> Dict:
             "id": "444555666",
             "name": "Diana Prince",
             "username": "diana",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
-            "description": "UX researcher and designer | Building better products through user insights",
+            "profilePicture": "https://i.pravatar.cc/150?img=4",
+            "bio": "UX researcher and designer | Building better products through user insights",
+            "degree": 2,
             "public_metrics": {
                 "followers_count": 3400,
                 "following_count": 800,
@@ -221,8 +225,9 @@ async def get_demo_user(username: str) -> Dict:
             "id": "333444555",
             "name": "Eve Wilson",
             "username": "eve",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
-            "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
+            "profilePicture": "https://i.pravatar.cc/150?img=5",
+            "bio": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
+            "degree": 3,
             "public_metrics": {
                 "followers_count": 2100,
                 "following_count": 600,
@@ -240,6 +245,153 @@ async def get_demo_user(username: str) -> Dict:
         )
     
     return demo_users[username_lower]
+
+
+@app.get("/demo/friends")
+async def get_demo_friends() -> List[Dict]:
+    """
+    Demo endpoint: Returns a list of mock friends for the Universe page.
+    This mimics the friends.json structure used in the frontend.
+    
+    Returns:
+        List of friend objects with username, profilePicture, bio, and degree
+    """
+    demo_users = {
+        "alice": {
+            "username": "alice",
+            "profilePicture": "https://i.pravatar.cc/150?img=1",
+            "bio": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
+            "degree": 1
+        },
+        "bob": {
+            "username": "bob",
+            "profilePicture": "https://i.pravatar.cc/150?img=2",
+            "bio": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
+            "degree": 1
+        },
+        "charlie": {
+            "username": "charlie",
+            "profilePicture": "https://i.pravatar.cc/150?img=3",
+            "bio": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
+            "degree": 2
+        },
+        "diana": {
+            "username": "diana",
+            "profilePicture": "https://i.pravatar.cc/150?img=4",
+            "bio": "UX researcher and designer | Building better products through user insights",
+            "degree": 2
+        },
+        "eve": {
+            "username": "eve",
+            "profilePicture": "https://i.pravatar.cc/150?img=5",
+            "bio": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
+            "degree": 3
+        },
+        "frank": {
+            "username": "frank",
+            "profilePicture": "https://i.pravatar.cc/150?img=6",
+            "bio": "Full-stack developer and coffee addict",
+            "degree": 1
+        },
+        "grace": {
+            "username": "grace",
+            "profilePicture": "https://i.pravatar.cc/150?img=7",
+            "bio": "Data scientist exploring AI and machine learning",
+            "degree": 2
+        },
+        "henry": {
+            "username": "henry",
+            "profilePicture": "https://i.pravatar.cc/150?img=8",
+            "bio": "Mobile app developer building the next big thing",
+            "degree": 2
+        },
+        "iris": {
+            "username": "iris",
+            "profilePicture": "https://i.pravatar.cc/150?img=9",
+            "bio": "Frontend enthusiast and design system advocate",
+            "degree": 3
+        },
+        "jack": {
+            "username": "jack",
+            "profilePicture": "https://i.pravatar.cc/150?img=10",
+            "bio": "DevOps engineer automating everything",
+            "degree": 3
+        },
+        "kate": {
+            "username": "kate",
+            "profilePicture": "https://i.pravatar.cc/150?img=11",
+            "bio": "Security researcher keeping the web safe",
+            "degree": 3
+        },
+        "leo": {
+            "username": "leo",
+            "profilePicture": "https://i.pravatar.cc/150?img=12",
+            "bio": "Cloud architect building scalable solutions",
+            "degree": 3
+        },
+        "maya": {
+            "username": "maya",
+            "profilePicture": "https://i.pravatar.cc/150?img=13",
+            "bio": "Game developer creating immersive experiences",
+            "degree": 3
+        },
+        "nick": {
+            "username": "nick",
+            "profilePicture": "https://i.pravatar.cc/150?img=14",
+            "bio": "Blockchain developer exploring Web3",
+            "degree": 3
+        },
+        "olivia": {
+            "username": "olivia",
+            "profilePicture": "https://i.pravatar.cc/150?img=15",
+            "bio": "QA engineer ensuring quality at every step",
+            "degree": 3
+        },
+        "paul": {
+            "username": "paul",
+            "profilePicture": "https://i.pravatar.cc/150?img=16",
+            "bio": "Technical writer documenting the future",
+            "degree": 3
+        },
+        "quinn": {
+            "username": "quinn",
+            "profilePicture": "https://i.pravatar.cc/150?img=17",
+            "bio": "Site reliability engineer keeping systems running",
+            "degree": 3
+        },
+        "rachel": {
+            "username": "rachel",
+            "profilePicture": "https://i.pravatar.cc/150?img=18",
+            "bio": "Product manager shipping great products",
+            "degree": 3
+        },
+        "sam": {
+            "username": "sam",
+            "profilePicture": "https://i.pravatar.cc/150?img=19",
+            "bio": "Backend engineer optimizing performance",
+            "degree": 3
+        },
+        "tina": {
+            "username": "tina",
+            "profilePicture": "https://i.pravatar.cc/150?img=20",
+            "bio": "UI/UX designer crafting beautiful interfaces",
+            "degree": 3
+        },
+        "uma": {
+            "username": "uma",
+            "profilePicture": "https://i.pravatar.cc/150?img=21",
+            "bio": "Database administrator managing petabytes",
+            "degree": 3
+        },
+        "victor": {
+            "username": "victor",
+            "profilePicture": "https://i.pravatar.cc/150?img=22",
+            "bio": "Systems programmer working close to the metal",
+            "degree": 3
+        }
+    }
+    
+    return list(demo_users.values())
 
 
 @app.get("/demo/mutuals")
