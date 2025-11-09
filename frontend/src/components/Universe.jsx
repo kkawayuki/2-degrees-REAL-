@@ -1,11 +1,17 @@
 import { useState, useEffect, useMemo } from "react";
 import "./Universe.css";
+import ProfilePage from "./ProfilePage";
 
 function Universe({ onReturnClick }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 	const [tooltipBelow, setTooltipBelow] = useState(false);
 	const [friendsData, setFriendsData] = useState([]);
+	const [selectedFriend, setSelectedFriend] = useState(null);
+	const [starPosition, setStarPosition] = useState({ x: 0, y: 0 });
+	const [hiddenStarIndex, setHiddenStarIndex] = useState(null);
+	const [planetTarget, setPlanetTarget] = useState({ x: 0, y: 0 });
+	const [starOrbitTargets, setStarOrbitTargets] = useState([]);
 
 	// Fetch friends data from API
 	useEffect(() => {
@@ -31,6 +37,9 @@ function Universe({ onReturnClick }) {
 	const stars = useMemo(() => {
 		if (!friendsData || friendsData.length === 0) return [];
 		
+		const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1920;
+		const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 1080;
+
 		return friendsData.map((friend, index) => {
 			// Determine star size based on degree
 			let size;
@@ -55,6 +64,8 @@ function Universe({ onReturnClick }) {
 			const bottomMargin = 25; // Extra margin from bottom for Return button
 			const topPercent = Math.random() * (100 - margin * 2 - bottomMargin) + margin;
 			const leftPercent = Math.random() * (100 - margin * 2) + margin;
+			const topPx = (topPercent / 100) * viewportHeight;
+			const leftPx = (leftPercent / 100) * viewportWidth;
 			
 			// Calculate years based on degree (lower degree = more years)
 			let years;
@@ -72,12 +83,41 @@ function Universe({ onReturnClick }) {
 				isLarge,
 				top: `${topPercent}%`,
 				left: `${leftPercent}%`,
+				topPx,
+				leftPx,
 				years,
 			};
 		});
 	}, [friendsData]);
 
-	const handleStarHover = (friend, event) => {
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const updatePlanetTarget = () => {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			setPlanetTarget({
+				x: width * 0.27,
+				y: height * 0.5,
+			});
+		};
+
+		updatePlanetTarget();
+		window.addEventListener("resize", updatePlanetTarget);
+
+		return () => window.removeEventListener("resize", updatePlanetTarget);
+	}, []);
+
+	const handleStarClick = (friend, event) => {
+		// Stop propagation to prevent background click
+		event.stopPropagation();
+		
+		// Toggle tooltip - if clicking same star, close it
+		if (hoveredFriend && hoveredFriend.username === friend.username) {
+			setHoveredFriend(null);
+			return;
+		}
+
 		setHoveredFriend(friend);
 		const rect = event.currentTarget.getBoundingClientRect();
 		const viewportHeight = window.innerHeight;
@@ -93,52 +133,106 @@ function Universe({ onReturnClick }) {
 		});
 	};
 
-	const handleStarMove = (event) => {
-		if (hoveredFriend) {
-			const rect = event.currentTarget.getBoundingClientRect();
-			const viewportHeight = window.innerHeight;
-			const starTopPercent = (rect.top / viewportHeight) * 100;
-			
-			// If star is in top 20% of viewport, show tooltip below
-			const showBelow = starTopPercent < 20;
-			setTooltipBelow(showBelow);
-			
-			setTooltipPosition({
-				x: rect.left + rect.width / 2,
-				y: showBelow ? rect.bottom + 10 : rect.top - 10,
-			});
-		}
-	};
-
-	const handleStarLeave = () => {
-		setHoveredFriend(null);
-	};
-
 	// Find the star data for the hovered friend to get years
 	const getStarYears = (friend) => {
 		const star = stars.find(s => s.friend.username === friend.username);
 		return star ? star.years : 5;
 	};
 
+	// Close tooltip when clicking on the background
+	const handleBackgroundClick = () => {
+		setHoveredFriend(null);
+	};
+
+	const handleVisitPlanet = () => {
+		// Save friend data before clearing hoveredFriend
+		const friendToShow = hoveredFriend;
+		
+		// Find the index of the clicked star
+		const starIndex = stars.findIndex(s => s.friend.username === friendToShow.username);
+		
+		// Get the actual star element position in pixels
+		const starElement = stars[starIndex];
+		const currentStarLeft = starElement?.leftPx ?? 0;
+		const currentStarTop = starElement?.topPx ?? 0;
+
+		// Ensure planet target is ready
+		let target = planetTarget;
+		if (!planetTarget.x && typeof window !== "undefined") {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			target = {
+				x: width * 0.27,
+				y: height * 0.5,
+			};
+			setPlanetTarget(target);
+		}
+		
+		// Save the exact star position
+		setStarPosition({
+			x: currentStarLeft + (starElement.size / 2), // center of star
+			y: currentStarTop + (starElement.size / 2)
+		});
+		
+		// Precompute orbit positions for surrounding stars
+		const orbitTargets = stars.map((star, idx) => {
+			if (idx === starIndex) {
+				return null;
+			}
+
+			const angle = ((idx + 2) / stars.length) * Math.PI * 2;
+			const radius = 180 + ((idx % 6) * 25);
+
+			return {
+				x: target.x + Math.cos(angle) * radius,
+				y: target.y + Math.sin(angle) * radius,
+			};
+		});
+
+		// Hide the clicked star
+		setHiddenStarIndex(starIndex);
+		
+		// Close the tooltip
+		setHoveredFriend(null);
+		
+		setStarOrbitTargets(orbitTargets);
+
+		// Show profile immediately to start animation
+		setSelectedFriend(friendToShow);
+	};
+
+	const handleCloseProfile = () => {
+		setSelectedFriend(null);
+		setHiddenStarIndex(null);
+		setStarOrbitTargets([]);
+	};
+
 	return (
-		<div className="universe-page">
+		<div
+			className={`universe-page ${selectedFriend ? 'stars-swirling' : ''}`}
+			onClick={handleBackgroundClick}
+		>
 			{stars.map((star, index) => 
 				star.isLarge ? (
 					<svg
 						key={`star-${index}`}
-						className="star-large star-interactive"
+						className={`star-large star-interactive ${hiddenStarIndex === index ? 'star-fadeout' : ''} ${selectedFriend && hiddenStarIndex !== index ? 'star-swirl-away' : ''}`}
 						style={{
 							position: 'absolute',
 							top: star.top,
 							left: star.left,
 							width: `${star.size}px`,
 							height: `${star.size}px`,
+							'--star-angle': `${(index * 137.5) % 360}deg`,
+							'--star-speed': `${0.8 + (index % 5) * 0.15}s`,
+							'--star-delay': `${(index % 7) * 0.05}s`,
+							'--star-distance': `${0.3 + (index % 4) * 0.15}`,
+							'--translate-x': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].x - star.leftPx}px` : '0px',
+							'--translate-y': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].y - star.topPx}px` : '0px',
 						}}
 						viewBox="0 0 130 130"
 						fill="none"
-						onMouseEnter={(e) => handleStarHover(star.friend, e)}
-						onMouseMove={(e) => handleStarMove(e)}
-						onMouseLeave={handleStarLeave}
+						onClick={(e) => handleStarClick(star.friend, e)}
 					>
 						<defs>
 							<filter id={`star-filter-${index}`} x="0.00019455" y="1.14441e-05" width="129.4" height="129.4" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
@@ -159,14 +253,18 @@ function Universe({ onReturnClick }) {
 				) : (
 					<div
 						key={`star-${index}`}
-						className="star-small star-interactive"
+						className={`star-small star-interactive ${hiddenStarIndex === index ? 'star-fadeout' : ''} ${selectedFriend && hiddenStarIndex !== index ? 'star-swirl-away' : ''}`}
 						style={{
 							top: star.top,
 							left: star.left,
+							'--star-angle': `${(index * 137.5) % 360}deg`,
+							'--star-speed': `${0.8 + (index % 5) * 0.15}s`,
+							'--star-delay': `${(index % 7) * 0.05}s`,
+							'--star-distance': `${0.3 + (index % 4) * 0.15}`,
+							'--translate-x': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].x - star.leftPx}px` : '0px',
+							'--translate-y': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].y - star.topPx}px` : '0px',
 						}}
-						onMouseEnter={(e) => handleStarHover(star.friend, e)}
-						onMouseMove={(e) => handleStarMove(e)}
-						onMouseLeave={handleStarLeave}
+						onClick={(e) => handleStarClick(star.friend, e)}
 					/>
 				)
 			)}
@@ -179,6 +277,7 @@ function Universe({ onReturnClick }) {
 						left: `${tooltipPosition.x}px`,
 						top: `${tooltipPosition.y}px`,
 					}}
+					onClick={(e) => e.stopPropagation()}
 				>
 					<div className="tooltip-content">
 						<div className="tooltip-main">
@@ -196,7 +295,7 @@ function Universe({ onReturnClick }) {
 									<span>{getStarYears(hoveredFriend)}+ years</span>
 								</div>
 								<div className="tooltip-buttons">
-									<button className="tooltip-button">Visit Planet</button>
+									<button className="tooltip-button" onClick={handleVisitPlanet}>Visit Planet</button>
 									<button className="tooltip-button">View Mutuals</button>
 								</div>
 							</div>
@@ -213,7 +312,10 @@ function Universe({ onReturnClick }) {
 			)}
 
 			{/* Return button */}
-			<div className="return-button-container" onClick={onReturnClick}>
+			<div className="return-button-container" onClick={(e) => {
+				e.stopPropagation();
+				onReturnClick();
+			}}>
 				<div className="return-button-circle">
 					<div className="return-button-icon">
 						<svg width="59" height="59" viewBox="0 0 24 24" fill="none">
@@ -223,6 +325,16 @@ function Universe({ onReturnClick }) {
 				</div>
 				<span className="return-text">Return</span>
 			</div>
+
+			{/* Profile page overlay */}
+			{selectedFriend && (
+				<ProfilePage 
+					friend={selectedFriend} 
+					onClose={handleCloseProfile}
+					starPosition={starPosition}
+					planetTarget={planetTarget}
+				/>
+			)}
 		</div>
 	);
 }
