@@ -1,0 +1,198 @@
+.landing-page {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	/* Background is handled by page-wrapper, so this is transparent */
+	background: transparent;
+	user-select: none;
+	-webkit-user-select: none;
+	border: none;
+	outline: none;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.scene {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	perspective: 1000px;
+	transition: filter 0.2s ease-out;
+	will-change: filter;
+}
+
+.sky {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* Removed .stars-container styles as stars are now in App.jsx */
+
+.star {
+	position: absolute;
+	transform: translate(-50%, -50%);
+}
+
+.star-small {
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: white;
+	/* SVG filter: blur 3.45px, white glow */
+	filter: drop-shadow(0 0 6.9px rgba(255, 255, 255, 1));
+}
+
+/* SVG stars - these are created dynamically with SVG paths */
+svg.star-large {
+	display: block;
+	background: transparent;
+}
+
+/* Fallback for div-based large stars (if any) */
+div.star-large {
+	width: 20px;
+	height: 20px;
+	background: white;
+	/* SVG filter: blur 11.85px, 49% opacity white */
+	filter: drop-shadow(0 0 23.7px rgba(255, 255, 255, 0.49));
+}
+
+.earth {
+	position: absolute;
+	/* Position globe so only upper half is visible */
+	top: 90%;
+	left: 50%;
+	/* Earth radius: 448px, diameter: 896px 
+	   Make it a reasonable size - about 120% of viewport */
+	width: 120vmin;
+	height: 120vmin;
+	border-radius: 50%;
+	background: transparent;
+	overflow: hidden;
+	z-index: 5;
+	transform-style: preserve-3d;
+	will-change: transform;
+	transform-origin: center center;
+	/* SVG shows Earth rotated -90 degrees initially */
+	transform: translate(-50%, -50%) rotate(-90deg);
+	transition: top 0.8s ease-in-out; /* Added for smooth globe movement */
+}
+
+.earth.telescope-mode {
+	top: 150%; /* Move globe off-screen downwards */
+}
+
+.earth-continents {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	overflow: hidden;
+	/* Clip to circle */
+	border-radius: 50%;
+	/* Ensure sharp, crisp rendering of landmasses */
+	shape-rendering: geometricPrecision;
+}
+
+.earth-globe {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+	pointer-events: none;
+	display: block;
+}
+
+.content {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	z-index: 10;
+	color: white;
+	text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+	pointer-events: none;
+	user-select: none;
+}
+
+/* Responsive scaling - keep Earth circular and centered */
+@media (min-aspect-ratio: 1) {
+	.earth {
+		width: 120vh;
+		height: 120vh;
+	}
+}
+
+@media (max-aspect-ratio: 1) {
+	.earth {
+		width: 120vw;
+		height: 120vw;
+	}
+}
+
+.corner-button {
+	position: absolute;
+	width: 122px;
+	height: 122px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	padding: 0;
+	z-index: 10;
+	pointer-events: auto;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.corner-button:hover {
+	transform: scale(1.05);
+	opacity: 0.9;
+}
+
+.corner-button:active {
+	transform: scale(0.95);
+}
+
+.corner-button-left {
+	bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh); /* Adjusted for higher position */
+	left: calc(50 / 1280 * 100vw);
+}
+
+.corner-button-right {
+	bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh); /* Adjusted for higher position */
+	right: calc((1280 - 1108 - 122) / 1280 * 100vw);
+}
+
+.corner-button svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+	.corner-button {
+		width: calc(122px * (100vw / 1280));
+		height: calc(122px * (100vw / 1280));
+	}
+	
+	.corner-button-left {
+		left: calc(50px * (100vw / 1280));
+		bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh);
+	}
+	
+	.corner-button-right {
+		right: calc((1280 - 1108 - 122) * (100vw / 1280));
+		bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh);
+	}
+}
