@@ -82,8 +82,6 @@
 }
 
 .globe-image-expanding {
-	width: 500px;
-	height: 500px;
 	border-radius: 50%;
 	animation: globeGrowAndMove 1.683s linear forwards;
 	position: absolute;
@@ -97,7 +95,18 @@
 	image-rendering: crisp-edges;
 }
 
+.globe-mars {
+	width: 500px;
+	height: 500px;
+}
+
+.globe-earth {
+	width: 500px;
+	height: 500px;
+}
+
 @keyframes globeGrowAndMove {
+	/* Faster animation - reduced from 2.2s to 1.0s */
 	0% {
 		opacity: 0.5;
 		transform: 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ProfilePage.css";
 
-function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing }) {
+function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing, isCurrentUser = false }) {
 	const [showGlobe, setShowGlobe] = useState(false);
 	const [showContent, setShowContent] = useState(false);
 
@@ -9,10 +9,10 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing })
 		// Show globe animation immediately from star position
 		setShowGlobe(true);
 		
-		// Show content after globe reaches destination
+		// Show content after globe reaches destination (faster transition)
 		const contentTimer = setTimeout(() => {
 			setShowContent(true);
-		}, 918);
+		}, 600);
 
 		return () => {
 			clearTimeout(contentTimer);
@@ -51,9 +51,9 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing })
 							}}
 						>
 							<img 
-								src="/Group 14.png" 
-								alt="Mars" 
-								className={`globe-image-expanding ${isClosing ? 'globe-shrink' : ''}`}
+								src={isCurrentUser ? "/globe.png" : "/Group 14.png"} 
+								alt={isCurrentUser ? "Earth" : "Mars"} 
+								className={`globe-image-expanding ${isCurrentUser ? 'globe-earth' : 'globe-mars'}`}
 							/>
 						</div>
 					)}

@@ -10,6 +10,11 @@ function App() {
 	const [showUniverse, setShowUniverse] = useState(false);
 	const [isTransitioningToUniverse, setIsTransitioningToUniverse] = useState(false);
 	const fixedStarsRef = useRef(null);
+	const [shootingStars, setShootingStars] = useState([]);
+	const [username, setUsername] = useState("");
+	const [usernameError, setUsernameError] = useState("");
+	const [demoUsers, setDemoUsers] = useState([]);
+	const [currentUsername, setCurrentUsername] = useState("");
 
 	// Exact star positions from SVG (in SVG coordinates: 1280x832) - same as landing page
 	// Using tytle.svg path for all large stars
@@ -152,11 +157,99 @@ function App() {
 		});
 	}, [tytlePath, starPositions]);
 
+	// Create shooting stars (no messages) from top right to bottom left
+	useEffect(() => {
+		if (showLandingPage || isTransitioning) return; // Only show on main page
+
+		const createShootingStar = () => {
+			// Start from top right, move diagonally to bottom left
+			const startX = window.innerWidth + 50; // Start right of viewport
+			const startY = -50; // Start above viewport (top right)
+			const endX = -100; // End left of viewport
+			const endY = window.innerHeight + 100; // End below viewport (bottom left)
+
+			// Calculate angle for the trail (diagonal movement from top-right to bottom-left)
+			const dx = endX - startX;
+			const dy = endY - startY;
+			const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+			const id = Date.now() + Math.random();
+			const newStar = {
+				id,
+				startX,
+				startY,
+				endX,
+				endY,
+				angle,
+			};
+
+			setShootingStars(prev => [...prev, newStar]);
+
+			// Remove star after animation completes (6 seconds)
+			setTimeout(() => {
+				setShootingStars(prev => prev.filter(star => star.id !== id));
+			}, 6000);
+		};
+
+		// Create first shooting star immediately
+		createShootingStar();
+
+		// Then create one every 5 seconds
+		const interval = setInterval(createShootingStar, 5000);
+
+		return () => clearInterval(interval);
+	}, [showLandingPage, isTransitioning]);
+
+	// Fetch demo users list on mount
+	useEffect(() => {
+		const fetchDemoUsers = async () => {
+			try {
+				const response = await fetch("http://localhost:8000/demo/friends");
+				if (response.ok) {
+					const users = await response.json();
+					setDemoUsers(users.map(user => user.username.toLowerCase()));
+				}
+			} catch (error) {
+				console.error("Failed to fetch demo users:", error);
+			}
+		};
+		fetchDemoUsers();
+	}, []);
+
 	const handleGetStarted = () => {
+		const usernameLower = username.trim().toLowerCase();
+		
+		// Validate username
+		if (!usernameLower) {
+			setUsernameError("Please enter a username");
+			return;
+		}
+		
+		if (!demoUsers.includes(usernameLower)) {
+			// Filter to only show users starting with a, b, or c for brevity
+			const filteredUsers = demoUsers.filter(user => user.startsWith('a') || user.startsWith('b') || user.startsWith('c'));
+			setUsernameError(`Username "${username}" not found. Available users: ${filteredUsers.join(", ")}...`);
+			return;
+		}
+		
+		// Clear error and proceed
+		setUsernameError("");
+		setCurrentUsername(usernameLower); // Store the entered username
 		setIsTransitioning(true);
 		setTimeout(() => {
 			setShowLandingPage(true);
 		}, 1200); // Match transition duration
+	};
+
+	const handleUsernameChange = (e) => {
+		setUsername(e.target.value);
+		setUsernameError(""); // Clear error when user types
+	};
+
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter") {
+			handleGetStarted();
+		}
 	};
 
 	const handleTelescopeClick = () => {
@@ -183,14 +276,46 @@ function App() {
 				{/* Stars layer - scrolls with this page */}
 				<div className="main-page-stars" ref={fixedStarsRef}></div>
 				
+				{/* Shooting stars (no messages) from top right to bottom left */}
+				{shootingStars.map((star) => (
+					<div
+						key={star.id}
+						className="main-shooting-star-container"
+						style={{
+							'--start-x': `${star.startX}px`,
+							'--start-y': `${star.startY}px`,
+							'--end-x': `${star.endX}px`,
+							'--end-y': `${star.endY}px`,
+							'--angle': `${star.angle}deg`,
+						}}
+					>
+						<div className="main-shooting-star">
+							<div className="main-shooting-star-trail"></div>
+						</div>
+					</div>
+				))}
+				
 				<div className="landing-page">
 					<div className="content-group">
-						<h1 className="headline">2ND DEGREE</h1>
+						<h1 className="headline">Shared Sky</h1>
 						<img src="/tytle.svg" alt="Star" className="star-tytle" />
 						<img src="/tytle.svg" alt="Star" className="star-n" />
 						<div className="button-group">
 							<div className="button-bg"></div>
-							<button className="cta-button" onClick={handleGetStarted}>Get started →</button>
+							<div className="username-input-container">
+								<input
+									type="text"
+									className="username-input"
+									placeholder="Enter username"
+									value={username}
+									onChange={handleUsernameChange}
+									onKeyPress={handleKeyPress}
+								/>
+								<button className="cta-button" onClick={handleGetStarted}>→</button>
+							</div>
+							{usernameError && (
+								<div className="username-error">{usernameError}</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -199,13 +324,14 @@ function App() {
 			<div className={`page-wrapper landing-page-wrapper ${isTransitioning || showLandingPage ? 'slide-in' : ''} ${isTransitioningToUniverse ? 'slide-out' : ''}`}>
 				<LandingPage 
 					onTelescopeClick={handleTelescopeClick} 
-					showTelescopeState={showIntermediateState} 
+					showTelescopeState={showIntermediateState}
+					currentUsername={currentUsername}
 				/>
 			</div>
 			
 			{showUniverse && (
 				<div className={`page-wrapper universe-page-wrapper ${isTransitioningToUniverse ? 'slide-in' : 'slide-out'}`}>
-					<Universe onReturnClick={handleReturnClick} />
+					<Universe onReturnClick={handleReturnClick} currentUsername={currentUsername} />
 				</div>
 			)}
 		</div>
