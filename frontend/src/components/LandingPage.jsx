@@ -4,6 +4,7 @@ import "./LandingPage.css";
 function LandingPage({ onTelescopeClick, showTelescopeState }) {
 	const earthRef = useRef(null);
 	const sceneRef = useRef(null);
+	const starsRef = useRef(null);
 	const autoRotationRef = useRef(0);
 	const animationFrameRef = useRef(null);
 	const [isDragging, setIsDragging] = useState(false);
@@ -124,6 +125,137 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 		}
 	};
 
+	// Generate stars avoiding the globe and buttons
+	useEffect(() => {
+		const starsContainer = starsRef.current;
+		if (!starsContainer) return;
+
+		starsContainer.innerHTML = '';
+
+		// Define the tytle.svg path for large stars
+		const tytlePath = 'M105.7 66.7C82.8467 79.4439 80.0688 73.5261 62.7002 105.7C50.8164 90.0478 52.0385 77.613 23.7002 63.7C47.4678 55.8739 58.4375 43.7 65.7506 23.7C73.0637 47.1783 78.3691 57.6678 105.7 66.7Z';
+
+		// Star positions - avoiding center (globe) and bottom corners (buttons)
+		const starPositions = [
+			// Top area stars
+			{ x: 15, y: 15, type: 'large', size: 35 },
+			{ x: 85, y: 10, type: 'large', size: 40 },
+			{ x: 25, y: 8, type: 'large', size: 30 },
+			{ x: 70, y: 20, type: 'large', size: 38 },
+			{ x: 45, y: 12, type: 'large', size: 32 },
+			
+			// Side areas (avoiding globe in center)
+			{ x: 8, y: 45, type: 'large', size: 36 },
+			{ x: 92, y: 48, type: 'large', size: 34 },
+			{ x: 12, y: 65, type: 'large', size: 33 },
+			{ x: 88, y: 62, type: 'large', size: 37 },
+			
+			// Small stars scattered around
+			{ x: 20, y: 25, type: 'small' },
+			{ x: 60, y: 18, type: 'small' },
+			{ x: 78, y: 32, type: 'small' },
+			{ x: 10, y: 55, type: 'small' },
+			{ x: 90, y: 75, type: 'small' },
+			{ x: 35, y: 85, type: 'small' },
+			{ x: 65, y: 82, type: 'small' },
+			{ x: 50, y: 5, type: 'small' },
+			{ x: 95, y: 35, type: 'small' },
+			{ x: 5, y: 78, type: 'small' },
+		];
+
+		starPositions.forEach((star, index) => {
+			if (star.type === 'large') {
+				const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				svg.setAttribute("class", "star star-large");
+				svg.setAttribute("viewBox", "0 0 130 130");
+				svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+				
+				svg.style.position = "absolute";
+				svg.style.left = `${star.x}%`;
+				svg.style.top = `${star.y}%`;
+				svg.style.width = `${star.size}px`;
+				svg.style.height = `${star.size}px`;
+				svg.style.transform = "translate(-50%, -50%)";
+				
+				const filterId = `landingStarGlow${index}`;
+				
+				const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+				const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+				filter.setAttribute("id", filterId);
+				filter.setAttribute("x", "0.00019455");
+				filter.setAttribute("y", "1.14441e-05");
+				filter.setAttribute("width", "129.4");
+				filter.setAttribute("height", "129.4");
+				filter.setAttribute("filterUnits", "userSpaceOnUse");
+				filter.setAttribute("color-interpolation-filters", "sRGB");
+				
+				const feFlood = document.createElementNS("http://www.w3.org/2000/svg", "feFlood");
+				feFlood.setAttribute("flood-opacity", "0");
+				feFlood.setAttribute("result", "BackgroundImageFix");
+				
+				const feColorMatrix1 = document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix");
+				feColorMatrix1.setAttribute("in", "SourceAlpha");
+				feColorMatrix1.setAttribute("type", "matrix");
+				feColorMatrix1.setAttribute("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0");
+				feColorMatrix1.setAttribute("result", "hardAlpha");
+				
+				const feOffset = document.createElementNS("http://www.w3.org/2000/svg", "feOffset");
+				
+				const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
+				feGaussianBlur.setAttribute("stdDeviation", "11.85");
+				
+				const feComposite = document.createElementNS("http://www.w3.org/2000/svg", "feComposite");
+				feComposite.setAttribute("in2", "hardAlpha");
+				feComposite.setAttribute("operator", "out");
+				
+				const feColorMatrix2 = document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix");
+				feColorMatrix2.setAttribute("type", "matrix");
+				feColorMatrix2.setAttribute("values", "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.49 0");
+				
+				const feBlend1 = document.createElementNS("http://www.w3.org/2000/svg", "feBlend");
+				feBlend1.setAttribute("mode", "normal");
+				feBlend1.setAttribute("in2", "BackgroundImageFix");
+				feBlend1.setAttribute("result", "effect1_dropShadow");
+				
+				const feBlend2 = document.createElementNS("http://www.w3.org/2000/svg", "feBlend");
+				feBlend2.setAttribute("mode", "normal");
+				feBlend2.setAttribute("in", "SourceGraphic");
+				feBlend2.setAttribute("in2", "effect1_dropShadow");
+				feBlend2.setAttribute("result", "shape");
+				
+				filter.appendChild(feFlood);
+				filter.appendChild(feColorMatrix1);
+				filter.appendChild(feOffset);
+				filter.appendChild(feGaussianBlur);
+				filter.appendChild(feComposite);
+				filter.appendChild(feColorMatrix2);
+				filter.appendChild(feBlend1);
+				filter.appendChild(feBlend2);
+				defs.appendChild(filter);
+				svg.appendChild(defs);
+				
+				const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+				g.setAttribute("filter", `url(#${filterId})`);
+				
+				const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				path.setAttribute("d", tytlePath);
+				path.setAttribute("fill", "white");
+				g.appendChild(path);
+				svg.appendChild(g);
+				
+				starsContainer.appendChild(svg);
+			} else {
+				const starElement = document.createElement("div");
+				starElement.className = "star star-small";
+				
+				starElement.style.left = `${star.x}%`;
+				starElement.style.top = `${star.y}%`;
+				
+				starsContainer.appendChild(starElement);
+			}
+		});
+	}, []);
+
 	return (
 		<div 
 			className="landing-page"
@@ -136,6 +268,9 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 			onTouchEnd={handleTouchEnd}
 			style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
 		>
+			{/* Stars layer - scrolls with this page */}
+			<div className="landing-page-stars" ref={starsRef}></div>
+			
 			<div className="scene" ref={sceneRef}>
 				<div className="sky"></div>
 				<div className={`earth ${showTelescopeState ? 'telescope-mode' : ''}`} ref={earthRef}>

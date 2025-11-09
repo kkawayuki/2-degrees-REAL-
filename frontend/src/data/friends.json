@@ -1,0 +1,135 @@
+[
+	{
+		"username": "alex_chen",
+		"profilePicture": "https://i.pravatar.cc/150?img=1",
+		"bio": "Software engineer passionate about space exploration",
+		"degree": 1
+	},
+	{
+		"username": "sarah_johnson",
+		"profilePicture": "https://i.pravatar.cc/150?img=2",
+		"bio": "Astronomer and stargazer. Always looking up!",
+		"degree": 1
+	},
+	{
+		"username": "mike_rodriguez",
+		"profilePicture": "https://i.pravatar.cc/150?img=3",
+		"bio": "Physics student exploring the cosmos",
+		"degree": 1
+	},
+	{
+		"username": "emma_wilson",
+		"profilePicture": "https://i.pravatar.cc/150?img=4",
+		"bio": "Photographer capturing the night sky",
+		"degree": 1
+	},
+	{
+		"username": "david_kim",
+		"profilePicture": "https://i.pravatar.cc/150?img=5",
+		"bio": "Space enthusiast and telescope collector",
+		"degree": 1
+	},
+	{
+		"username": "lisa_anderson",
+		"profilePicture": "https://i.pravatar.cc/150?img=6",
+		"bio": "Astrophysics researcher studying distant galaxies",
+		"degree": 1
+	},
+	{
+		"username": "james_taylor",
+		"profilePicture": "https://i.pravatar.cc/150?img=7",
+		"bio": "Amateur astronomer sharing the wonders of space",
+		"degree": 1
+	},
+	{
+		"username": "olivia_brown",
+		"profilePicture": "https://i.pravatar.cc/150?img=8",
+		"bio": "Science communicator making space accessible",
+		"degree": 1
+	},
+	{
+		"username": "noah_martinez",
+		"profilePicture": "https://i.pravatar.cc/150?img=9",
+		"bio": "Planetary scientist exploring our solar system",
+		"degree": 1
+	},
+	{
+		"username": "sophia_lee",
+		"profilePicture": "https://i.pravatar.cc/150?img=10",
+		"bio": "Cosmology student fascinated by the universe",
+		"degree": 1
+	},
+	{
+		"username": "william_garcia",
+		"profilePicture": "https://i.pravatar.cc/150?img=11",
+		"bio": "Space technology engineer building the future",
+		"degree": 1
+	},
+	{
+		"username": "ava_miller",
+		"profilePicture": "https://i.pravatar.cc/150?img=12",
+		"bio": "Astrobiology researcher searching for life",
+		"degree": 1
+	},
+	{
+		"username": "ethan_davis",
+		"profilePicture": "https://i.pravatar.cc/150?img=13",
+		"bio": "Telescope operator at observatory",
+		"degree": 2
+	},
+	{
+		"username": "isabella_moore",
+		"profilePicture": "https://i.pravatar.cc/150?img=14",
+		"bio": "Space art creator and enthusiast",
+		"degree": 2
+	},
+	{
+		"username": "mason_white",
+		"profilePicture": "https://i.pravatar.cc/150?img=15",
+		"bio": "Astrophotography hobbyist",
+		"degree": 2
+	},
+	{
+		"username": "mia_harris",
+		"profilePicture": "https://i.pravatar.cc/150?img=16",
+		"bio": "Science teacher inspiring next generation",
+		"degree": 2
+	},
+	{
+		"username": "lucas_clark",
+		"profilePicture": "https://i.pravatar.cc/150?img=17",
+		"bio": "Space mission planner and coordinator",
+		"degree": 2
+	},
+	{
+		"username": "amelia_lewis",
+		"profilePicture": "https://i.pravatar.cc/150?img=18",
+		"bio": "Cosmic ray researcher",
+		"degree": 2
+	},
+	{
+		"username": "henry_walker",
+		"profilePicture": "https://i.pravatar.cc/150?img=19",
+		"bio": "Space history enthusiast",
+		"degree": 3
+	},
+	{
+		"username": "charlotte_hall",
+		"profilePicture": "https://i.pravatar.cc/150?img=20",
+		"bio": "Stargazing guide and educator",
+		"degree": 3
+	},
+	{
+		"username": "benjamin_allen",
+		"profilePicture": "https://i.pravatar.cc/150?img=21",
+		"bio": "Space technology journalist",
+		"degree": 3
+	},
+	{
+		"username": "harper_young",
+		"profilePicture": "https://i.pravatar.cc/150?img=22",
+		"bio": "Astronomy club member",
+		"degree": 3
+	}
+]
+
