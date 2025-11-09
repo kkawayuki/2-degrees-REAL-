@@ -236,14 +236,19 @@
 	top: 152px;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 369px;
-	height: 86px;
+	width: 500px;
+	min-height: 86px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
 }
 
 .button-bg {
 	position: absolute;
 	top: 0;
-	left: 0;
+	left: 50%;
+	transform: translateX(-50%);
 	width: 369px;
 	height: 86px;
 	border-radius: 44px;
@@ -254,14 +259,60 @@
 	);
 }
 
+.username-input-container {
+	position: relative;
+	width: 369px;
+	height: 86px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	z-index: 2;
+	padding: 0 20px;
+}
+
+.username-input {
+	flex: 1;
+	height: 46px;
+	padding: 0 15px;
+	border: none;
+	border-radius: 22px;
+	background: transparent;
+	color: #000000;
+	font-family: "Roboto Mono", monospace;
+	font-weight: 700;
+	font-size: 20px;
+	outline: none;
+	text-align: center;
+	transition: border-color 0.2s;
+}
+
+.username-input:focus {
+	outline: none;
+}
+
+.username-input::placeholder {
+	color: rgba(0, 0, 0, 0.5);
+	text-align: center;
+}
+
+.username-error {
+	color: #ff6b6b;
+	font-family: "Roboto Mono", monospace;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 5px;
+	z-index: 3;
+	max-width: 450px;
+	line-height: 1.4;
+}
+
 .cta-button {
-	position: absolute;
-	top: 22px;
-	left: 75px;
+	position: static;
 	font-family: "Roboto Mono-Bold", "Roboto Mono", monospace;
 	font-weight: 700;
 	color: #000000;
-	font-size: 30px;
+	font-size: 24px;
 	letter-spacing: 0;
 	line-height: normal;
 	background: none;
@@ -272,6 +323,7 @@
 	height: auto;
 	outline: none;
 	box-shadow: none;
+	white-space: nowrap;
 }
 
 .cta-button:hover {

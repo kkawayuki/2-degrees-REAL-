@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./LandingPage.css";
+import ProfilePage from "./ProfilePage";
 
 // Array of common internet phrases
 const casualMessages = [
@@ -35,7 +36,7 @@ const casualMessages = [
 	"we don't deserve this"
 ];
 
-function LandingPage({ onTelescopeClick, showTelescopeState }) {
+function LandingPage({ onTelescopeClick, showTelescopeState, currentUsername }) {
 	const earthRef = useRef(null);
 	const sceneRef = useRef(null);
 	const starsRef = useRef(null);
@@ -47,6 +48,12 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 	const [rotation, setRotation] = useState(0);
 	const [currentRotation, setCurrentRotation] = useState(0);
 	const [shootingStars, setShootingStars] = useState([]);
+	const [showProfile, setShowProfile] = useState(false);
+	const [userProfile, setUserProfile] = useState(null);
+	const [profileStarPosition, setProfileStarPosition] = useState({ x: 0, y: 0 });
+	const [profilePlanetTarget, setProfilePlanetTarget] = useState({ x: 0, y: 0 });
+	const [starOrbitTargets, setStarOrbitTargets] = useState([]);
+	const [starPositions, setStarPositions] = useState([]);
 
 	// Automatic rotation animation
 	useEffect(() => {
@@ -171,7 +178,7 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 		const tytlePath = 'M105.7 66.7C82.8467 79.4439 80.0688 73.5261 62.7002 105.7C50.8164 90.0478 52.0385 77.613 23.7002 63.7C47.4678 55.8739 58.4375 43.7 65.7506 23.7C73.0637 47.1783 78.3691 57.6678 105.7 66.7Z';
 
 		// Star positions - avoiding center (globe) and bottom corners (buttons)
-		const starPositions = [
+		const positions = [
 			// Top area stars
 			{ x: 15, y: 15, type: 'large', size: 35 },
 			{ x: 85, y: 10, type: 'large', size: 40 },
@@ -198,7 +205,15 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 			{ x: 5, y: 78, type: 'small' },
 		];
 
-		starPositions.forEach((star, index) => {
+		// Store star positions with pixel coordinates
+		const positionsWithPx = positions.map((star, index) => {
+			const leftPx = (star.x / 100) * window.innerWidth;
+			const topPx = (star.y / 100) * window.innerHeight;
+			return { ...star, index, leftPx, topPx };
+		});
+		setStarPositions(positionsWithPx);
+
+		positionsWithPx.forEach((star, index) => {
 			if (star.type === 'large') {
 				const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 				svg.setAttribute("class", "star star-large");
@@ -211,6 +226,20 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 				svg.style.width = `${star.size}px`;
 				svg.style.height = `${star.size}px`;
 				svg.style.transform = "translate(-50%, -50%)";
+				svg.dataset.index = index.toString();
+				
+				// Add orbit animation classes when profile is open
+				if (showProfile && starOrbitTargets[index]) {
+					const translateX = starOrbitTargets[index].x - star.leftPx;
+					const translateY = starOrbitTargets[index].y - star.topPx;
+					svg.style.setProperty('--translate-x', `${translateX}px`);
+					svg.style.setProperty('--translate-y', `${translateY}px`);
+					svg.style.setProperty('--star-speed', `${0.6 + (index % 5) * 0.1}s`);
+					svg.style.setProperty('--star-delay', `${(index % 7) * 0.03}s`);
+					svg.classList.add('star-swirl-away');
+				} else {
+					svg.classList.remove('star-swirl-away');
+				}
 				
 				const filterId = `landingStarGlow${index}`;
 				
@@ -285,20 +314,38 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 				
 				starElement.style.left = `${star.x}%`;
 				starElement.style.top = `${star.y}%`;
+				starElement.dataset.index = index.toString();
+				
+				// Add orbit animation classes when profile is open
+				if (showProfile && starOrbitTargets[index]) {
+					const translateX = starOrbitTargets[index].x - star.leftPx;
+					const translateY = starOrbitTargets[index].y - star.topPx;
+					starElement.style.setProperty('--translate-x', `${translateX}px`);
+					starElement.style.setProperty('--translate-y', `${translateY}px`);
+					starElement.style.setProperty('--star-speed', `${0.6 + (index % 5) * 0.1}s`);
+					starElement.style.setProperty('--star-delay', `${(index % 7) * 0.03}s`);
+					starElement.classList.add('star-swirl-away');
+				} else {
+					starElement.classList.remove('star-swirl-away');
+				}
 				
 				starsContainer.appendChild(starElement);
 			}
 		});
-	}, []);
+	}, [showProfile, starOrbitTargets]);
 
 	// Create shooting stars with messages
 	useEffect(() => {
+		// Pause shooting stars when profile is open
+		if (showProfile) return;
+
 		const createShootingStar = () => {
 			const message = casualMessages[Math.floor(Math.random() * casualMessages.length)];
 			
 			// Start from top left corner, move diagonally down-right
+			// Move starting position down by 5% of viewport height
 			const startX = -50; // Start left of viewport
-			const startY = -50; // Start above viewport (top left)
+			const startY = -50 + (window.innerHeight * 0.05); // Start above viewport + 5% down
 			const endX = window.innerWidth + 100; // End off right edge
 			const endY = window.innerHeight + 100; // End below viewport (bottom right)
 
@@ -333,7 +380,69 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 		const interval = setInterval(createShootingStar, 5000);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [showProfile]);
+
+	// Handle profile button click
+	const handleProfileClick = async () => {
+		if (!currentUsername) return;
+
+		// Get button position for animation
+		const button = document.querySelector('.corner-button-left');
+		if (button) {
+			const rect = button.getBoundingClientRect();
+			const starPos = {
+				x: rect.left + rect.width / 2,
+				y: rect.top + rect.height / 2
+			};
+			setProfileStarPosition(starPos);
+			
+			// Target position for planet (left side of screen)
+			const target = {
+				x: window.innerWidth * 0.25,
+				y: window.innerHeight * 0.5
+			};
+			setProfilePlanetTarget(target);
+
+			// Calculate orbit positions for stars around the planet (same as Universe)
+			const orbitTargets = starPositions.map((star, idx) => {
+				const angle = ((idx + 2) / starPositions.length) * Math.PI * 2;
+				const radius = 180 + ((idx % 6) * 25);
+				return {
+					x: target.x + Math.cos(angle) * radius,
+					y: target.y + Math.sin(angle) * radius,
+				};
+			});
+			setStarOrbitTargets(orbitTargets);
+		}
+
+		// Fetch user profile data
+		try {
+			const response = await fetch(`http://localhost:8000/demo/users/${currentUsername}`);
+			if (response.ok) {
+				const userData = await response.json();
+				// Transform to match ProfilePage expected format
+				setUserProfile({
+					username: userData.username,
+					name: userData.name,
+					profilePicture: userData.profilePicture || userData.profile_image_url,
+					bio: userData.bio || userData.description,
+					degree: 0, // Current user is degree 0 (self)
+					public_metrics: userData.public_metrics
+				});
+				setShowProfile(true);
+			} else {
+				console.error('Failed to fetch user profile');
+			}
+		} catch (error) {
+			console.error('Error fetching user profile:', error);
+		}
+	};
+
+	const handleCloseProfile = () => {
+		setShowProfile(false);
+		setUserProfile(null);
+		setStarOrbitTargets([]);
+	};
 
 	return (
 		<div 
@@ -352,13 +461,13 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 			
 			<div className="scene" ref={sceneRef}>
 				<div className="sky"></div>
-				<div className={`earth ${showTelescopeState ? 'telescope-mode' : ''}`} ref={earthRef}>
+				<div className={`earth ${showTelescopeState ? 'telescope-mode' : ''} ${showProfile ? 'fade-out' : 'fade-in'}`} ref={earthRef}>
 					<img src="/globe.png" alt="Earth Globe" className="earth-globe" />
 				</div>
 			</div>
 			
-			{/* Bottom left button - Person (no functionality) */}
-			<button className="corner-button corner-button-left">
+			{/* Bottom left button - Person (profile) */}
+			<button className="corner-button corner-button-left" onClick={handleProfileClick}>
 				<svg width="122" height="122" viewBox="0 0 122 122" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<rect x="2" y="2" width="118" height="118" rx="18" fill="url(#paint7_linear_left)" stroke="#3C7EE7" strokeWidth="4"/>
 					<path fillRule="evenodd" clipRule="evenodd" d="M46.6667 45.083C46.6667 41.282 48.1768 37.636 50.865 34.948C53.553 32.26 57.199 30.75 61 30.75C64.801 30.75 68.447 32.26 71.135 34.948C73.823 37.636 75.333 41.282 75.333 45.083C75.333 48.885 73.823 52.531 71.135 55.219C68.447 57.907 64.801 59.417 61 59.417C57.199 59.417 53.553 57.907 50.865 55.219C48.1768 52.531 46.6667 48.885 46.6667 45.083ZM46.6667 66.583C41.9149 66.583 37.3577 68.471 33.9977 71.831C30.6376 75.191 28.75 79.748 28.75 84.5C28.75 87.351 29.8826 90.085 31.8986 92.101C33.9146 94.117 36.6489 95.25 39.5 95.25H82.5C85.351 95.25 88.085 94.117 90.101 92.101C92.117 90.085 93.25 87.351 93.25 84.5C93.25 79.748 91.362 75.191 88.002 71.831C84.642 68.471 80.085 66.583 75.333 66.583H46.6667Z" fill="#3D3D3D"/>
@@ -405,6 +514,17 @@ function LandingPage({ onTelescopeClick, showTelescopeState }) {
 					<div className="shooting-star-message">{star.message}</div>
 				</div>
 			))}
+
+			{/* Profile page overlay */}
+			{showProfile && userProfile && (
+				<ProfilePage 
+					friend={userProfile} 
+					onClose={handleCloseProfile}
+					starPosition={profileStarPosition}
+					planetTarget={profilePlanetTarget}
+					isCurrentUser={true}
+				/>
+			)}
 		</div>
 	);
 }

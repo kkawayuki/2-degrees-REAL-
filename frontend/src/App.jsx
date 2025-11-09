@@ -11,6 +11,10 @@ function App() {
 	const [isTransitioningToUniverse, setIsTransitioningToUniverse] = useState(false);
 	const fixedStarsRef = useRef(null);
 	const [shootingStars, setShootingStars] = useState([]);
+	const [username, setUsername] = useState("");
+	const [usernameError, setUsernameError] = useState("");
+	const [demoUsers, setDemoUsers] = useState([]);
+	const [currentUsername, setCurrentUsername] = useState("");
 
 	// Exact star positions from SVG (in SVG coordinates: 1280x832) - same as landing page
 	// Using tytle.svg path for all large stars
@@ -196,11 +200,56 @@ function App() {
 		return () => clearInterval(interval);
 	}, [showLandingPage, isTransitioning]);
 
+	// Fetch demo users list on mount
+	useEffect(() => {
+		const fetchDemoUsers = async () => {
+			try {
+				const response = await fetch("http://localhost:8000/demo/friends");
+				if (response.ok) {
+					const users = await response.json();
+					setDemoUsers(users.map(user => user.username.toLowerCase()));
+				}
+			} catch (error) {
+				console.error("Failed to fetch demo users:", error);
+			}
+		};
+		fetchDemoUsers();
+	}, []);
+
 	const handleGetStarted = () => {
+		const usernameLower = username.trim().toLowerCase();
+		
+		// Validate username
+		if (!usernameLower) {
+			setUsernameError("Please enter a username");
+			return;
+		}
+		
+		if (!demoUsers.includes(usernameLower)) {
+			// Filter to only show users starting with a, b, or c for brevity
+			const filteredUsers = demoUsers.filter(user => user.startsWith('a') || user.startsWith('b') || user.startsWith('c'));
+			setUsernameError(`Username "${username}" not found. Available users: ${filteredUsers.join(", ")}...`);
+			return;
+		}
+		
+		// Clear error and proceed
+		setUsernameError("");
+		setCurrentUsername(usernameLower); // Store the entered username
 		setIsTransitioning(true);
 		setTimeout(() => {
 			setShowLandingPage(true);
 		}, 1200); // Match transition duration
+	};
+
+	const handleUsernameChange = (e) => {
+		setUsername(e.target.value);
+		setUsernameError(""); // Clear error when user types
+	};
+
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter") {
+			handleGetStarted();
+		}
 	};
 
 	const handleTelescopeClick = () => {
@@ -253,7 +302,20 @@ function App() {
 						<img src="/tytle.svg" alt="Star" className="star-n" />
 						<div className="button-group">
 							<div className="button-bg"></div>
-							<button className="cta-button" onClick={handleGetStarted}>Get started →</button>
+							<div className="username-input-container">
+								<input
+									type="text"
+									className="username-input"
+									placeholder="Enter username"
+									value={username}
+									onChange={handleUsernameChange}
+									onKeyPress={handleKeyPress}
+								/>
+								<button className="cta-button" onClick={handleGetStarted}>→</button>
+							</div>
+							{usernameError && (
+								<div className="username-error">{usernameError}</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -262,13 +324,14 @@ function App() {
 			<div className={`page-wrapper landing-page-wrapper ${isTransitioning || showLandingPage ? 'slide-in' : ''} ${isTransitioningToUniverse ? 'slide-out' : ''}`}>
 				<LandingPage 
 					onTelescopeClick={handleTelescopeClick} 
-					showTelescopeState={showIntermediateState} 
+					showTelescopeState={showIntermediateState}
+					currentUsername={currentUsername}
 				/>
 			</div>
 			
 			{showUniverse && (
 				<div className={`page-wrapper universe-page-wrapper ${isTransitioningToUniverse ? 'slide-in' : 'slide-out'}`}>
-					<Universe onReturnClick={handleReturnClick} />
+					<Universe onReturnClick={handleReturnClick} currentUsername={currentUsername} />
 				</div>
 			)}
 		</div>

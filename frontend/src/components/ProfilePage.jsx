@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ProfilePage.css";
 
-function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
+function ProfilePage({ friend, onClose, starPosition, planetTarget, isCurrentUser = false }) {
 	const [showGlobe, setShowGlobe] = useState(false);
 	const [showContent, setShowContent] = useState(false);
 
@@ -9,10 +9,10 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 		// Show globe animation immediately from star position
 		setShowGlobe(true);
 		
-		// Show content after globe reaches destination
+		// Show content after globe reaches destination (faster transition)
 		const contentTimer = setTimeout(() => {
 			setShowContent(true);
-		}, 1200);
+		}, 600);
 
 		return () => {
 			clearTimeout(contentTimer);
@@ -35,7 +35,11 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 								'--planet-target-y': `${planetTarget.y}px`,
 							}}
 						>
-							<img src="/Group 14.png" alt="Mars" className="globe-image-expanding" />
+							<img 
+								src={isCurrentUser ? "/globe.png" : "/Group 14.png"} 
+								alt={isCurrentUser ? "Earth" : "Mars"} 
+								className={`globe-image-expanding ${isCurrentUser ? 'globe-earth' : 'globe-mars'}`}
+							/>
 						</div>
 					)}
 				</div>
@@ -46,7 +50,7 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 						<div className="profile-page-content">
 							<div className="profile-card">
 						<div className="profile-header">
-							<h1 className="profile-name">{friend.username}</h1>
+							<h1 className="profile-name">{friend.name || friend.username}</h1>
 							<div className="social-icons">
 								<img src="/insta.png" alt="Instagram" className="social-icon" />
 								<img src="/x.png" alt="X" className="social-icon" />

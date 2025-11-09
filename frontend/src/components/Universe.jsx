@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import "./Universe.css";
 import ProfilePage from "./ProfilePage";
 
-function Universe({ onReturnClick }) {
+function Universe({ onReturnClick, currentUsername }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 	const [tooltipBelow, setTooltipBelow] = useState(false);
@@ -20,7 +20,11 @@ function Universe({ onReturnClick }) {
 				const response = await fetch('/api/demo/friends');
 				if (response.ok) {
 					const data = await response.json();
-					setFriendsData(data);
+					// Filter out the current username from the friends list
+					const filteredData = data.filter(friend => 
+						friend.username.toLowerCase() !== currentUsername.toLowerCase()
+					);
+					setFriendsData(filteredData);
 				} else {
 					console.error('Failed to fetch friends data');
 				}
@@ -30,7 +34,7 @@ function Universe({ onReturnClick }) {
 		};
 
 		fetchFriends();
-	}, []);
+	}, [currentUsername]);
 
 	// Generate stars procedurally based on friends data
 	// Degree determines size: degree 1 = largest, 2 = medium, 3+ = smallest
