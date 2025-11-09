@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import "./Universe.css";
 import ProfilePage from "./ProfilePage";
+import MutualsView from "./MutualsView";
 
 function Universe({ onReturnClick, currentUsername }) {
 	const [hoveredFriend, setHoveredFriend] = useState(null);
@@ -14,6 +15,9 @@ function Universe({ onReturnClick, currentUsername }) {
 	const [starOrbitTargets, setStarOrbitTargets] = useState([]);
 	const [isClosing, setIsClosing] = useState(false);
 	const [originalStarPositions, setOriginalStarPositions] = useState([]);
+	const [showMutualsView, setShowMutualsView] = useState(false);
+	const [mutualsStarIndex, setMutualsStarIndex] = useState(null);
+	const [isMutualsExiting, setIsMutualsExiting] = useState(false);
 
 	// Fetch friends data from API
 	useEffect(() => {
@@ -22,11 +26,7 @@ function Universe({ onReturnClick, currentUsername }) {
 				const response = await fetch('/api/demo/friends');
 				if (response.ok) {
 					const data = await response.json();
-					// Filter out the current username from the friends list
-					const filteredData = data.filter(friend => 
-						friend.username.toLowerCase() !== currentUsername.toLowerCase()
-					);
-					setFriendsData(filteredData);
+					setFriendsData(data);
 				} else {
 					console.error('Failed to fetch friends data');
 				}
@@ -36,7 +36,7 @@ function Universe({ onReturnClick, currentUsername }) {
 		};
 
 		fetchFriends();
-	}, [currentUsername]);
+	}, []);
 
 	// Generate stars procedurally based on friends data
 	// Degree determines size: degree 1 = largest, 2 = medium, 3+ = smallest
@@ -229,6 +229,40 @@ function Universe({ onReturnClick, currentUsername }) {
 		}, 1683);
 	};
 
+	const handleViewMutuals = () => {
+		// Save friend data before clearing hoveredFriend
+		const friendToShow = hoveredFriend;
+		
+		// Find the index of the clicked star
+		const starIndex = stars.findIndex(s => s.friend.username === friendToShow.username);
+		
+		// Get the actual star element position in pixels
+		const starElement = stars[starIndex];
+		const currentStarLeft = starElement?.leftPx ?? 0;
+		const currentStarTop = starElement?.topPx ?? 0;
+
+		// Save the exact star position
+		setStarPosition({
+			x: currentStarLeft + (starElement.size / 2), // center of star
+			y: currentStarTop + (starElement.size / 2)
+		});
+		
+		// Save the star index for mutuals view
+		setMutualsStarIndex(starIndex);
+		
+		// Close the tooltip
+		setHoveredFriend(null);
+		
+		// Show mutuals view
+		setShowMutualsView(true);
+	};
+
+	const handleCloseMutuals = () => {
+		// Trigger exit animation first
+		setIsMutualsExiting(true);
+		// onClose callback will be called by MutualsView after animation completes
+	};
+
 	return (
 		<div
 			className={`universe-page ${selectedFriend ? 'stars-swirling' : ''}`}
@@ -338,7 +372,7 @@ function Universe({ onReturnClick, currentUsername }) {
 								</div>
 								<div className="tooltip-buttons">
 									<button className="tooltip-button" onClick={handleVisitPlanet}>Visit Planet</button>
-									<button className="tooltip-button">View Mutuals</button>
+									<button className="tooltip-button" onClick={handleViewMutuals}>View Mutuals</button>
 								</div>
 							</div>
 							<div className="tooltip-right">
@@ -353,21 +387,28 @@ function Universe({ onReturnClick, currentUsername }) {
 				</div>
 			)}
 
-			{/* Return button */}
-			{!selectedFriend && (
+			{/* Return button - hide when mutuals view is open */}
+			{!showMutualsView && (
 				<div className="return-button-container" onClick={(e) => {
 					e.stopPropagation();
-					onReturnClick();
+					// If profile view is open, close it
+					if (selectedFriend) {
+						handleCloseProfile();
+					}
+					// Otherwise, return to landing page
+					else {
+						onReturnClick();
+					}
 				}}>
-				<div className="return-button-circle">
-					<div className="return-button-icon">
-						<svg width="59" height="59" viewBox="0 0 24 24" fill="none">
-							<path d="M12 6L12 18M12 18L6 12M12 18L18 12" stroke="#333333" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-						</svg>
+					<div className="return-button-circle">
+						<div className="return-button-icon">
+							<svg width="59" height="59" viewBox="0 0 24 24" fill="none">
+								<path d="M12 6L12 18M12 18L6 12M12 18L18 12" stroke="#333333" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+							</svg>
+						</div>
 					</div>
+					<span className="return-text">Return</span>
 				</div>
-				<span className="return-text">Return</span>
-			</div>
 			)}
 
 			{/* Profile page overlay */}
@@ -378,6 +419,22 @@ function Universe({ onReturnClick, currentUsername }) {
 					starPosition={starPosition}
 					planetTarget={planetTarget}
 					isClosing={isClosing}
+				/>
+			)}
+
+			{/* Mutuals view overlay */}
+			{showMutualsView && (
+				<MutualsView 
+					friend={stars[mutualsStarIndex]?.friend}
+					stars={stars}
+					selectedStarIndex={mutualsStarIndex}
+					starPosition={starPosition}
+					isExiting={isMutualsExiting}
+					onClose={() => {
+						setShowMutualsView(false);
+						setMutualsStarIndex(null);
+						setIsMutualsExiting(false);
+					}}
 				/>
 			)}
 		</div>

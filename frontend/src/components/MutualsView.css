@@ -1,0 +1,303 @@
+.mutuals-view-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1000;
+	background: transparent;
+	overflow: hidden;
+}
+
+/* Mars planet - enlarges from star position */
+.mars-container {
+	position: fixed;
+	pointer-events: none;
+}
+
+.mars-image-expanding {
+	width: 345px;
+	height: 345px;
+	border-radius: 50%;
+	position: absolute;
+	left: var(--start-x);
+	top: var(--start-y);
+	transform: translate(-50%, -50%) scale(0.1) translateZ(0);
+	will-change: transform, opacity;
+	backface-visibility: hidden;
+	transform-origin: center center;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
+
+.mars-image-expanding:not(.mars-shrink-reverse) {
+	animation: marsGrowAndMove 2s linear forwards;
+}
+
+@keyframes marsGrowAndMove {
+	0% {
+		opacity: 0.6;
+		transform: 
+			translate(0px, 0px)
+			translate(-50%, -50%)
+			scale(0.1)
+			translateZ(0);
+	}
+	50% {
+		opacity: 0.9;
+		transform: 
+			translate(
+				calc((var(--target-x) - var(--start-x)) * 0.5),
+				calc((var(--target-y) - var(--start-y)) * 0.5)
+			)
+			translate(-50%, -50%)
+			scale(0.6)
+			translateZ(0);
+	}
+	100% {
+		opacity: 1;
+		transform: 
+			translate(
+				calc(var(--target-x) - var(--start-x)),
+				calc(var(--target-y) - var(--start-y))
+			)
+			translate(-50%, -50%)
+			scale(1)
+			translateZ(0);
+	}
+}
+
+/* Reverse animation for Mars - shrink back to star position */
+.mars-shrink-reverse {
+	animation: marsShrinkAndMove 2s linear forwards;
+}
+
+@keyframes marsShrinkAndMove {
+	0% {
+		opacity: 1;
+		transform: 
+			translate(
+				calc(var(--target-x) - var(--start-x)),
+				calc(var(--target-y) - var(--start-y))
+			)
+			translate(-50%, -50%)
+			scale(1)
+			translateZ(0);
+	}
+	50% {
+		opacity: 0.9;
+		transform: 
+			translate(
+				calc((var(--target-x) - var(--start-x)) * 0.5),
+				calc((var(--target-y) - var(--start-y)) * 0.5)
+			)
+			translate(-50%, -50%)
+			scale(0.6)
+			translateZ(0);
+	}
+	100% {
+		opacity: 0.6;
+		transform: 
+			translate(0px, 0px)
+			translate(-50%, -50%)
+			scale(0.1)
+			translateZ(0);
+	}
+}
+
+/* Earth planet - appears on the right */
+.earth-container {
+	position: fixed;
+	pointer-events: none;
+}
+
+.earth-image {
+	width: 345px;
+	height: 345px;
+	border-radius: 50%;
+	position: absolute;
+	left: var(--target-x);
+	top: var(--target-y);
+	transform: translate(-50%, -50%) scale(0) translateZ(0);
+	will-change: transform, opacity;
+	backface-visibility: hidden;
+	transform-origin: center center;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
+
+.earth-image:not(.earth-disappear-reverse) {
+	animation: earthAppear 1.5s linear forwards;
+}
+
+@keyframes earthAppear {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0) translateZ(0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1) translateZ(0);
+	}
+}
+
+/* Reverse animation for Earth - disappear */
+.earth-disappear-reverse {
+	animation: earthDisappear 1.5s linear forwards;
+}
+
+@keyframes earthDisappear {
+	0% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1) translateZ(0);
+	}
+	100% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0) translateZ(0);
+	}
+}
+
+/* Stars orbiting around planets */
+.mutual-star-large,
+.mutual-star-small {
+	pointer-events: none;
+}
+
+.mutual-star-small {
+	width: 4px;
+	height: 4px;
+	background-color: #ffffff;
+	border-radius: 2px;
+	box-shadow: 0px 0px 6.9px 1px #ffffff;
+}
+
+.mutual-star-large {
+	pointer-events: none;
+}
+
+.star-orbit {
+	animation: starOrbit var(--orbit-duration, 1.5s) ease-out var(--orbit-delay, 0s) forwards;
+}
+
+@keyframes starOrbit {
+	0% {
+		opacity: 1;
+		transform: translate(0, 0) scale(1);
+	}
+	100% {
+		opacity: 0.85;
+		transform: translate(
+			calc(var(--target-x) - var(--start-x)),
+			calc(var(--target-y) - var(--start-y))
+		) scale(0.7);
+	}
+}
+
+/* Reverse animation for stars - return to original positions */
+.star-orbit-reverse {
+	animation: starOrbitReverse var(--orbit-duration, 1.5s) ease-in var(--orbit-delay, 0s) forwards;
+}
+
+@keyframes starOrbitReverse {
+	0% {
+		opacity: 0.85;
+		transform: translate(
+			calc(var(--target-x) - var(--start-x)),
+			calc(var(--target-y) - var(--start-y))
+		) scale(0.7);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0, 0) scale(1);
+	}
+}
+
+/* Constellation lines */
+.constellation-lines {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 999;
+}
+
+.constellation-line {
+	stroke: white;
+	stroke-width: 2;
+	stroke-opacity: 0;
+	transition: stroke-opacity 0.3s ease;
+}
+
+.constellation-line-appear {
+	animation: constellationLineAppear 0.5s ease-out var(--line-delay, 0s) forwards;
+}
+
+@keyframes constellationLineAppear {
+	0% {
+		stroke-opacity: 0;
+	}
+	100% {
+		stroke-opacity: 0.6;
+	}
+}
+
+.constellation-line-disappear {
+	animation: constellationLineDisappear 0.3s ease-in forwards;
+}
+
+@keyframes constellationLineDisappear {
+	0% {
+		stroke-opacity: 0.6;
+	}
+	100% {
+		stroke-opacity: 0;
+	}
+}
+
+/* Return button for mutuals view */
+.mutuals-return-button-container {
+	position: fixed;
+	top: 40px;
+	left: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	z-index: 2001;
+	cursor: pointer;
+	pointer-events: auto;
+	transition: opacity 0.2s ease;
+}
+
+.mutuals-return-button-container:hover {
+	opacity: 0.8;
+}
+
+.mutuals-return-button-container:active {
+	opacity: 0.6;
+}
+
+.mutuals-return-button-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+}
+
+.mutuals-return-button-icon svg {
+	width: 100%;
+	height: 100%;
+}
+
+.mutuals-return-text {
+	color: #ffffff;
+	font-family: "Roboto Mono", monospace;
+	font-weight: 700;
+	font-size: 16px;
+	letter-spacing: 0;
+	line-height: normal;
+}
+
