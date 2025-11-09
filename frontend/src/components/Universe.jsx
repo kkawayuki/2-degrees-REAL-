@@ -320,7 +320,7 @@ function Universe({ onReturnClick }) {
 					<div className="tooltip-content">
 						<div className="tooltip-main">
 							<div className="tooltip-left">
-								<div className="tooltip-name">{hoveredFriend.username}</div>
+								<div className="tooltip-name">{hoveredFriend.username.charAt(0).toUpperCase() + hoveredFriend.username.slice(1)}</div>
 								<div className="tooltip-quote">"{hoveredFriend.bio}"</div>
 								<div className="tooltip-connection">
 									<div className="connection-icon"></div>

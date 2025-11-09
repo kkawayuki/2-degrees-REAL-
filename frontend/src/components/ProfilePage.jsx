@@ -67,7 +67,7 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing })
 								{/* Grid layout */}
 								<div className="profile-grid">
 									{/* Row 1: Name and Social icons */}
-									<h1 className="grid-name">{friend.username}</h1>
+									<h1 className="grid-name">{friend.username.charAt(0).toUpperCase() + friend.username.slice(1)}</h1>
 									<div className="grid-social-icons">
 										<img src="/insta.png" alt="Instagram" className="social-icon" />
 										<img src="/x.png" alt="X" className="social-icon" />
