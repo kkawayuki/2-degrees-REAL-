@@ -417,7 +417,7 @@ async def get_demo_mutuals(
             "id": "123456789",
             "name": "Alice Johnson",
             "username": "alice",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/1234567890/example1_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=1",
             "description": "Software engineer and tech enthusiast 🚀 | Building the future one commit at a time",
             "public_metrics": {
                 "followers_count": 1250,
@@ -430,7 +430,7 @@ async def get_demo_mutuals(
             "id": "987654321",
             "name": "Bob Smith",
             "username": "bob",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/9876543210/example2_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=2",
             "description": "Product designer and coffee lover ☕ | Crafting beautiful user experiences",
             "public_metrics": {
                 "followers_count": 890,
@@ -443,7 +443,7 @@ async def get_demo_mutuals(
             "id": "555666777",
             "name": "Charlie Brown",
             "username": "charlie",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=3",
             "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
             "public_metrics": {
                 "followers_count": 5600,
@@ -456,7 +456,7 @@ async def get_demo_mutuals(
             "id": "444555666",
             "name": "Diana Prince",
             "username": "diana",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=47",
             "description": "UX researcher and designer | Building better products through user insights",
             "public_metrics": {
                 "followers_count": 3400,
@@ -469,7 +469,7 @@ async def get_demo_mutuals(
             "id": "333444555",
             "name": "Eve Wilson",
             "username": "eve",
-            "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
+            "profile_image_url": "https://i.pravatar.cc/150?img=5",
             "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
             "public_metrics": {
                 "followers_count": 2100,
@@ -495,7 +495,7 @@ async def get_demo_mutuals(
         )
     
     # Mock mutual connections - different sets based on user combinations
-    # For alice & bob, return charlie, diana, eve as mutuals
+    # For alice & bob, return charlie, diana, eve, frank, grace, henry as mutuals
     # For other combinations, return a subset
     if (user1_lower == "alice" and user2_lower == "bob") or (user1_lower == "bob" and user2_lower == "alice"):
         mutual_users = [
@@ -503,7 +503,7 @@ async def get_demo_mutuals(
                 "id": "555666777",
                 "name": "Charlie Brown",
                 "username": "charlie",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=3",
                 "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
                 "public_metrics": {
                     "followers_count": 5600,
@@ -516,7 +516,7 @@ async def get_demo_mutuals(
                 "id": "444555666",
                 "name": "Diana Prince",
                 "username": "diana",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/4445556660/example4_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=47",
                 "description": "UX researcher and designer | Building better products through user insights",
                 "public_metrics": {
                     "followers_count": 3400,
@@ -529,13 +529,52 @@ async def get_demo_mutuals(
                 "id": "333444555",
                 "name": "Eve Wilson",
                 "username": "eve",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/3334445550/example5_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=5",
                 "description": "Tech writer and blogger 📝 | Sharing insights on software development and tech trends",
                 "public_metrics": {
                     "followers_count": 2100,
                     "following_count": 600,
                     "tweet_count": 1500,
                     "listed_count": 35
+                }
+            },
+            {
+                "id": "222333444",
+                "name": "Frank Miller",
+                "username": "frank",
+                "profile_image_url": "https://i.pravatar.cc/150?img=33",
+                "description": "Data scientist and ML engineer 🤖 | Exploring the intersection of AI and human creativity",
+                "public_metrics": {
+                    "followers_count": 4800,
+                    "following_count": 950,
+                    "tweet_count": 6700,
+                    "listed_count": 89
+                }
+            },
+            {
+                "id": "111222333",
+                "name": "Grace Lee",
+                "username": "grace",
+                "profile_image_url": "https://i.pravatar.cc/150?img=7",
+                "description": "Product manager and startup founder 🚀 | Building products that matter",
+                "public_metrics": {
+                    "followers_count": 2900,
+                    "following_count": 720,
+                    "tweet_count": 3800,
+                    "listed_count": 52
+                }
+            },
+            {
+                "id": "999888777",
+                "name": "Henry Chen",
+                "username": "henry",
+                "profile_image_url": "https://i.pravatar.cc/150?img=8",
+                "description": "Full-stack developer and open source contributor 💻 | Making the web a better place",
+                "public_metrics": {
+                    "followers_count": 3700,
+                    "following_count": 1100,
+                    "tweet_count": 5200,
+                    "listed_count": 74
                 }
             }
         ]
@@ -546,7 +585,7 @@ async def get_demo_mutuals(
                 "id": "555666777",
                 "name": "Charlie Brown",
                 "username": "charlie",
-                "profile_image_url": "https://pbs.twimg.com/profile_images/5556667770/example3_normal.jpg",
+                "profile_image_url": "https://i.pravatar.cc/150?img=3",
                 "description": "Developer advocate passionate about open source 🌟 | Sharing knowledge daily",
                 "public_metrics": {
                     "followers_count": 5600,

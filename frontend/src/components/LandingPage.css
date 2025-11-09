@@ -120,6 +120,36 @@ div.star-large {
 	top: 150%; /* Move globe off-screen downwards */
 }
 
+.earth.glow-spin {
+	animation: planetGlow 2s ease-in-out infinite;
+	filter: drop-shadow(0 0 40px rgba(141, 195, 255, 0.8)) drop-shadow(0 0 80px rgba(141, 195, 255, 0.6));
+}
+
+.earth.glow-spin .earth-globe {
+	animation: planetSpin 3s linear infinite;
+}
+
+@keyframes planetGlow {
+	0% {
+		filter: drop-shadow(0 0 20px rgba(141, 195, 255, 0.6)) drop-shadow(0 0 40px rgba(141, 195, 255, 0.4));
+	}
+	50% {
+		filter: drop-shadow(0 0 60px rgba(141, 195, 255, 1)) drop-shadow(0 0 120px rgba(141, 195, 255, 0.8));
+	}
+	100% {
+		filter: drop-shadow(0 0 20px rgba(141, 195, 255, 0.6)) drop-shadow(0 0 40px rgba(141, 195, 255, 0.4));
+	}
+}
+
+@keyframes planetSpin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .earth-continents {
 	position: absolute;
 	top: 0;
@@ -225,4 +255,116 @@ div.star-large {
 		right: calc((1280 - 1108 - 122) * (100vw / 1280));
 		bottom: calc((834 - 641 - 122) / 834 * 100vh + 10vh);
 	}
+}
+
+/* Second user input form */
+.second-user-input-container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 500px;
+	height: 86px;
+	z-index: 10;
+}
+
+.second-user-form {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.second-user-input-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 44px;
+	background: linear-gradient(
+		180deg,
+		rgba(141, 195, 255, 1) 0%,
+		rgba(247, 251, 255, 1) 100%
+	);
+}
+
+.second-user-input {
+	position: absolute;
+	top: 22px;
+	left: 20px;
+	right: 60px;
+	font-family: "Roboto Mono-Bold", "Roboto Mono", monospace;
+	font-weight: 700;
+	color: #000000;
+	font-size: 24px;
+	letter-spacing: 0;
+	line-height: normal;
+	background: none;
+	border: none;
+	padding: 0;
+	width: auto;
+	height: auto;
+	outline: none;
+	box-shadow: none;
+	text-align: center;
+}
+
+.second-user-input::placeholder {
+	color: #666666;
+	font-weight: 400;
+	font-size: 20px;
+}
+
+.second-user-submit {
+	position: absolute;
+	top: 22px;
+	right: 20px;
+	font-family: "Roboto Mono-Bold", "Roboto Mono", monospace;
+	font-weight: 700;
+	color: #000000;
+	font-size: 30px;
+	letter-spacing: 0;
+	line-height: normal;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	width: auto;
+	height: auto;
+	outline: none;
+	box-shadow: none;
+}
+
+.second-user-submit:hover {
+	opacity: 0.8;
+}
+
+.second-user-submit:active {
+	opacity: 0.9;
+}
+
+.second-user-submit:focus,
+.second-user-submit:focus-visible {
+	outline: none;
+	box-shadow: none;
+}
+
+.second-user-input.input-error {
+	border: 2px solid #ff4444;
+	border-radius: 44px;
+}
+
+.second-user-input-container .input-error-message {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-top: 8px;
+	color: #ff4444;
+	font-family: "Roboto Mono", monospace;
+	font-size: 14px;
+	font-weight: 400;
+	white-space: nowrap;
+	z-index: 100;
+	text-shadow: 0px 0px 10px rgba(255, 68, 68, 0.5);
 }
