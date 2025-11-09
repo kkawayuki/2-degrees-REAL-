@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ProfilePage.css";
 
-function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
+function ProfilePage({ friend, onClose, starPosition, planetTarget, isClosing }) {
 	const [showGlobe, setShowGlobe] = useState(false);
 	const [showContent, setShowContent] = useState(false);
 
@@ -12,12 +12,19 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 		// Show content after globe reaches destination
 		const contentTimer = setTimeout(() => {
 			setShowContent(true);
-		}, 1200);
+		}, 918);
 
 		return () => {
 			clearTimeout(contentTimer);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (isClosing) {
+			// Hide content immediately when closing
+			setShowContent(false);
+		}
+	}, [isClosing]);
 
 	return (
 		<div className="profile-page-overlay">
@@ -43,7 +50,11 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 								'--planet-target-y': `${planetTarget.y}px`,
 							}}
 						>
-							<img src="/Group 14.png" alt="Mars" className="globe-image-expanding" />
+							<img 
+								src="/Group 14.png" 
+								alt="Mars" 
+								className={`globe-image-expanding ${isClosing ? 'globe-shrink' : ''}`}
+							/>
 						</div>
 					)}
 				</div>
@@ -85,7 +96,7 @@ function ProfilePage({ friend, onClose, starPosition, planetTarget }) {
 									{/* Row 4: Music and Avatar */}
 									<div className="grid-music">
 										<div className="now-playing">
-											<img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&h=100&fit=crop" alt="Album art" className="album-art" />
+											<img src="/ochos rios.png" alt="Album art" className="album-art" />
 											<div className="song-info">
 												<div className="song-icon">♫</div>
 												<div>

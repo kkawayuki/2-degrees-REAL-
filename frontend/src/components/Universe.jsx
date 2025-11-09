@@ -12,6 +12,8 @@ function Universe({ onReturnClick }) {
 	const [hiddenStarIndex, setHiddenStarIndex] = useState(null);
 	const [planetTarget, setPlanetTarget] = useState({ x: 0, y: 0 });
 	const [starOrbitTargets, setStarOrbitTargets] = useState([]);
+	const [isClosing, setIsClosing] = useState(false);
+	const [originalStarPositions, setOriginalStarPositions] = useState([]);
 
 	// Fetch friends data from API
 	useEffect(() => {
@@ -174,6 +176,13 @@ function Universe({ onReturnClick }) {
 			y: currentStarTop + (starElement.size / 2)
 		});
 		
+		// Store original star positions for reverse animation
+		const originalPositions = stars.map((star, idx) => ({
+			x: star.leftPx,
+			y: star.topPx,
+		}));
+		setOriginalStarPositions(originalPositions);
+
 		// Precompute orbit positions for surrounding stars
 		const orbitTargets = stars.map((star, idx) => {
 			if (idx === starIndex) {
@@ -196,15 +205,24 @@ function Universe({ onReturnClick }) {
 		setHoveredFriend(null);
 		
 		setStarOrbitTargets(orbitTargets);
+		setIsClosing(false);
 
 		// Show profile immediately to start animation
 		setSelectedFriend(friendToShow);
 	};
 
 	const handleCloseProfile = () => {
-		setSelectedFriend(null);
-		setHiddenStarIndex(null);
-		setStarOrbitTargets([]);
+		// Start reverse animation
+		setIsClosing(true);
+		
+		// Wait for animation to complete (1.683s for planet + stars)
+		setTimeout(() => {
+			setSelectedFriend(null);
+			setHiddenStarIndex(null);
+			setStarOrbitTargets([]);
+			setIsClosing(false);
+			setOriginalStarPositions([]);
+		}, 1683);
 	};
 
 	return (
@@ -216,7 +234,15 @@ function Universe({ onReturnClick }) {
 				star.isLarge ? (
 					<svg
 						key={`star-${index}`}
-						className={`star-large star-interactive ${hiddenStarIndex === index ? 'star-fadeout' : ''} ${selectedFriend && hiddenStarIndex !== index ? 'star-swirl-away' : ''}`}
+						className={`star-large star-interactive ${
+							hiddenStarIndex === index && !isClosing ? 'star-fadeout' : ''
+						} ${
+							hiddenStarIndex === index && isClosing ? 'star-fadein' : ''
+						} ${
+							selectedFriend && !isClosing && hiddenStarIndex !== index ? 'star-swirl-away' : ''
+						} ${
+							isClosing && hiddenStarIndex !== index ? 'star-return' : ''
+						}`}
 						style={{
 							position: 'absolute',
 							top: star.top,
@@ -224,11 +250,13 @@ function Universe({ onReturnClick }) {
 							width: `${star.size}px`,
 							height: `${star.size}px`,
 							'--star-angle': `${(index * 137.5) % 360}deg`,
-							'--star-speed': `${0.8 + (index % 5) * 0.15}s`,
+							'--star-speed': `${(0.8 + (index % 5) * 0.15) * 0.765}s`,
 							'--star-delay': `${(index % 7) * 0.05}s`,
 							'--star-distance': `${0.3 + (index % 4) * 0.15}`,
 							'--translate-x': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].x - star.leftPx}px` : '0px',
 							'--translate-y': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].y - star.topPx}px` : '0px',
+							'--return-x': isClosing && originalStarPositions[index] && starOrbitTargets[index] ? `${originalStarPositions[index].x - starOrbitTargets[index].x}px` : '0px',
+							'--return-y': isClosing && originalStarPositions[index] && starOrbitTargets[index] ? `${originalStarPositions[index].y - starOrbitTargets[index].y}px` : '0px',
 						}}
 						viewBox="0 0 130 130"
 						fill="none"
@@ -253,16 +281,26 @@ function Universe({ onReturnClick }) {
 				) : (
 					<div
 						key={`star-${index}`}
-						className={`star-small star-interactive ${hiddenStarIndex === index ? 'star-fadeout' : ''} ${selectedFriend && hiddenStarIndex !== index ? 'star-swirl-away' : ''}`}
+						className={`star-small star-interactive ${
+							hiddenStarIndex === index && !isClosing ? 'star-fadeout' : ''
+						} ${
+							hiddenStarIndex === index && isClosing ? 'star-fadein' : ''
+						} ${
+							selectedFriend && !isClosing && hiddenStarIndex !== index ? 'star-swirl-away' : ''
+						} ${
+							isClosing && hiddenStarIndex !== index ? 'star-return' : ''
+						}`}
 						style={{
 							top: star.top,
 							left: star.left,
 							'--star-angle': `${(index * 137.5) % 360}deg`,
-							'--star-speed': `${0.8 + (index % 5) * 0.15}s`,
+							'--star-speed': `${(0.8 + (index % 5) * 0.15) * 0.765}s`,
 							'--star-delay': `${(index % 7) * 0.05}s`,
 							'--star-distance': `${0.3 + (index % 4) * 0.15}`,
 							'--translate-x': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].x - star.leftPx}px` : '0px',
 							'--translate-y': selectedFriend && starOrbitTargets[index] ? `${starOrbitTargets[index].y - star.topPx}px` : '0px',
+							'--return-x': isClosing && originalStarPositions[index] && starOrbitTargets[index] ? `${originalStarPositions[index].x - starOrbitTargets[index].x}px` : '0px',
+							'--return-y': isClosing && originalStarPositions[index] && starOrbitTargets[index] ? `${originalStarPositions[index].y - starOrbitTargets[index].y}px` : '0px',
 						}}
 						onClick={(e) => handleStarClick(star.friend, e)}
 					/>
@@ -335,6 +373,7 @@ function Universe({ onReturnClick }) {
 					onClose={handleCloseProfile}
 					starPosition={starPosition}
 					planetTarget={planetTarget}
+					isClosing={isClosing}
 				/>
 			)}
 		</div>

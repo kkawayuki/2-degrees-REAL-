@@ -85,7 +85,7 @@
 	width: 500px;
 	height: 500px;
 	border-radius: 50%;
-	animation: globeGrowAndMove 2.2s linear forwards;
+	animation: globeGrowAndMove 1.683s linear forwards;
 	position: absolute;
 	left: var(--start-x);
 	top: var(--start-y);
@@ -127,6 +127,44 @@
 			)
 			translate(-50%, -50%)
 			scale(1);
+	}
+}
+
+/* Reverse animation - planet shrinks and moves back to star */
+.globe-shrink {
+	animation: globeShrinkAndMove 1.683s linear forwards;
+}
+
+@keyframes globeShrinkAndMove {
+	0% {
+		opacity: 1;
+		transform: 
+			translate(
+				calc(var(--planet-target-x, 50vw) - var(--start-x)),
+				calc(var(--planet-target-y, 50vh) - var(--start-y))
+			)
+			translate(-50%, -50%)
+			scale(1);
+	}
+	50% {
+		opacity: 0.8;
+		transform: 
+			translate(
+				calc((var(--planet-target-x, 50vw) - var(--start-x)) * 0.5),
+				calc((var(--planet-target-y, 50vh) - var(--start-y)) * 0.5)
+			)
+			translate(-50%, -50%)
+			scale(0.55);
+	}
+	100% {
+		opacity: 0.5;
+		transform: 
+			translate(
+				0px,
+				0px
+			)
+			translate(-50%, -50%)
+			scale(0.1);
 	}
 }
 
@@ -290,11 +328,11 @@
 
 .now-playing {
 	background-color: #141836b2;
-	padding: 10px;
-	border-radius: 8px;
+	padding: 14px;
+	border-radius: 10px;
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 14px;
 	border: 1px solid rgba(100, 120, 180, 0.3);
 	width: 100%;
 	height: fit-content;
@@ -327,34 +365,34 @@
 
 
 .album-art {
-	width: 50px;
-	height: 50px;
-	border-radius: 6px;
+	width: 75px;
+	height: 75px;
+	border-radius: 8px;
 	object-fit: cover;
 }
 
 .song-info {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 12px;
 	flex: 1;
 }
 
 .song-icon {
-	font-size: 16px;
+	font-size: 22px;
 	color: #1DB954;
 }
 
 .song-title {
 	color: white;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 18px;
 	font-family: "Courier New", monospace;
 }
 
 .song-artist {
 	color: rgba(255, 255, 255, 0.6);
-	font-size: 10px;
+	font-size: 14px;
 	font-family: "Courier New", monospace;
 }
 
