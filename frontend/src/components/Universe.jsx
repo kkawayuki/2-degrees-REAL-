@@ -263,6 +263,71 @@ function Universe({ onReturnClick, currentUsername }) {
 		// onClose callback will be called by MutualsView after animation completes
 	};
 
+	const handleVisitPlanetFromMutuals = (friend, starPosition) => {
+		// Find the index of the star
+		const starIndex = stars.findIndex(s => s.friend.username === friend.username);
+		if (starIndex === -1) return;
+		
+		// Ensure planet target is ready
+		let target = planetTarget;
+		if (!planetTarget.x && typeof window !== "undefined") {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			target = {
+				x: width * 0.27,
+				y: height * 0.5,
+			};
+			setPlanetTarget(target);
+		}
+		
+		// Store original star positions for reverse animation
+		const originalPositions = stars.map((star, idx) => ({
+			x: star.leftPx,
+			y: star.topPx,
+		}));
+		setOriginalStarPositions(originalPositions);
+
+		// Precompute orbit positions for surrounding stars
+		const orbitTargets = stars.map((star, idx) => {
+			if (idx === starIndex) {
+				return null;
+			}
+
+			const angle = ((idx + 2) / stars.length) * Math.PI * 2;
+			const radius = 180 + ((idx % 6) * 25);
+
+			return {
+				x: target.x + Math.cos(angle) * radius,
+				y: target.y + Math.sin(angle) * radius,
+			};
+		});
+
+		// Hide the clicked star
+		setHiddenStarIndex(starIndex);
+		
+		setStarOrbitTargets(orbitTargets);
+		setIsClosing(false);
+
+		// Show profile immediately to start animation
+		setSelectedFriend(friend);
+		setStarPosition(starPosition);
+	};
+
+	const handleViewMutualsFromMutuals = (friend, starPosition) => {
+		// Find the index of the star
+		const starIndex = stars.findIndex(s => s.friend.username === friend.username);
+		if (starIndex === -1) return;
+		
+		// Save the star position
+		setStarPosition(starPosition);
+		
+		// Save the star index for mutuals view
+		setMutualsStarIndex(starIndex);
+		
+		// Show mutuals view
+		setShowMutualsView(true);
+	};
+
 	return (
 		<div
 			className={`universe-page ${selectedFriend ? 'stars-swirling' : ''}`}
@@ -435,6 +500,8 @@ function Universe({ onReturnClick, currentUsername }) {
 						setMutualsStarIndex(null);
 						setIsMutualsExiting(false);
 					}}
+					onVisitPlanet={handleVisitPlanetFromMutuals}
+					onViewMutuals={handleViewMutualsFromMutuals}
 				/>
 			)}
 		</div>

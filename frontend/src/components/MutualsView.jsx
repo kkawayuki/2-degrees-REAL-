@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./MutualsView.css";
 
-function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, isExiting: externalIsExiting }) {
+function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, isExiting: externalIsExiting, onVisitPlanet, onViewMutuals }) {
 	const [showMars, setShowMars] = useState(false);
 	const [showStars, setShowStars] = useState(false);
 	const [showEarth, setShowEarth] = useState(false);
@@ -9,6 +9,9 @@ function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, 
 	const [isExiting, setIsExiting] = useState(false);
 	const [marsPosition, setMarsPosition] = useState({ x: 0, y: 0 });
 	const [earthPosition, setEarthPosition] = useState({ x: 0, y: 0 });
+	const [hoveredFriend, setHoveredFriend] = useState(null);
+	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+	const [tooltipBelow, setTooltipBelow] = useState(false);
 
 	// Sync with external isExiting prop
 	useEffect(() => {
@@ -236,8 +239,120 @@ function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, 
 		}
 	}
 
+	// Find the star data for the hovered friend to get years
+	const getStarYears = (friend) => {
+		const star = stars.find(s => s.friend.username === friend.username);
+		return star ? star.years : 5;
+	};
+
+	const handleStarClick = (friend, event, starIndex) => {
+		// Stop propagation to prevent background click
+		event.stopPropagation();
+		
+		// Toggle tooltip - if clicking same star, close it
+		if (hoveredFriend && hoveredFriend.username === friend.username) {
+			setHoveredFriend(null);
+			return;
+		}
+
+		setHoveredFriend(friend);
+		
+		// Get the star's current position after animation
+		const orbitPos = starOrbitPositions[starIndex];
+		if (!orbitPos) return;
+		
+		// Get the star element to calculate tooltip position
+		const starElement = stars[starIndex];
+		const starSize = starElement?.size || 40;
+		
+		// Calculate tooltip position based on star's center position
+		const starCenterX = orbitPos.x;
+		const starCenterY = orbitPos.y;
+		
+		const viewportHeight = window.innerHeight;
+		const starTopPercent = (starCenterY / viewportHeight) * 100;
+		
+		// If star is in top 20% of viewport, show tooltip below
+		const showBelow = starTopPercent < 20;
+		setTooltipBelow(showBelow);
+		
+		setTooltipPosition({
+			x: starCenterX,
+			y: showBelow ? starCenterY + starSize / 2 + 10 : starCenterY - starSize / 2 - 10,
+		});
+	};
+
+	// Close tooltip when clicking on the background
+	const handleBackgroundClick = () => {
+		setHoveredFriend(null);
+	};
+
+	const handleVisitPlanetFromMutuals = () => {
+		if (!hoveredFriend || !onVisitPlanet) return;
+		
+		// Find the star index
+		const starIndex = stars.findIndex(s => s.friend.username === hoveredFriend.username);
+		if (starIndex === -1) return;
+		
+		// Get the star's current position after animation
+		const orbitPos = starOrbitPositions[starIndex];
+		if (!orbitPos) return;
+		
+		const starElement = stars[starIndex];
+		const starSize = starElement?.size || 40;
+		
+		// Calculate star center position
+		const starCenterX = orbitPos.x;
+		const starCenterY = orbitPos.y;
+		
+		// Close tooltip
+		setHoveredFriend(null);
+		
+		// Close mutuals view first
+		setIsExiting(true);
+		setTimeout(() => {
+			if (onClose) onClose();
+			// Then trigger visit planet with the star position
+			if (onVisitPlanet) {
+				onVisitPlanet(hoveredFriend, { x: starCenterX, y: starCenterY });
+			}
+		}, 500); // Short delay to allow exit animation to start
+	};
+
+	const handleViewMutualsFromMutuals = () => {
+		if (!hoveredFriend || !onViewMutuals) return;
+		
+		// Find the star index
+		const starIndex = stars.findIndex(s => s.friend.username === hoveredFriend.username);
+		if (starIndex === -1) return;
+		
+		// Get the star's current position after animation
+		const orbitPos = starOrbitPositions[starIndex];
+		if (!orbitPos) return;
+		
+		const starElement = stars[starIndex];
+		const starSize = starElement?.size || 40;
+		
+		// Calculate star center position
+		const starCenterX = orbitPos.x;
+		const starCenterY = orbitPos.y;
+		
+		// Close tooltip
+		setHoveredFriend(null);
+		
+		// Close current mutuals view first
+		setIsExiting(true);
+		setTimeout(() => {
+			if (onClose) onClose();
+			// Then trigger view mutuals with the star position
+			if (onViewMutuals) {
+				onViewMutuals(hoveredFriend, { x: starCenterX, y: starCenterY });
+			}
+		}, 500); // Short delay to allow exit animation to start
+	};
+
 	return (
-		<div className="mutuals-view-overlay">
+		<div className="mutuals-view-overlay" onClick={handleBackgroundClick}>
 			{/* Constellation lines connecting large stars */}
 			{constellationLines.length > 0 && (
 				<svg className="constellation-lines" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 999 }}>
@@ -284,7 +399,7 @@ function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, 
 				return star.isLarge ? (
 					<svg
 						key={`mutual-star-${index}`}
-						className={`mutual-star-large ${isExiting ? 'star-orbit-reverse' : showStars ? 'star-orbit' : ''}`}
+						className={`mutual-star-large mutual-star-interactive ${isExiting ? 'star-orbit-reverse' : showStars ? 'star-orbit' : ''}`}
 						style={{
 							position: 'absolute',
 							top: star.top,
@@ -301,6 +416,7 @@ function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, 
 						}}
 						viewBox="0 0 130 130"
 						fill="none"
+						onClick={(e) => handleStarClick(star.friend, e, index)}
 					>
 						<defs>
 							<filter id={`mutual-star-filter-${index}`} x="0.00019455" y="1.14441e-05" width="129.4" height="129.4" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
@@ -362,6 +478,48 @@ function MutualsView({ friend, stars, selectedStarIndex, starPosition, onClose, 
 					}}
 				>
 					<img src="/globe.png" alt="Earth" className={`earth-image ${isExiting ? 'earth-disappear-reverse' : ''}`} />
+				</div>
+			)}
+
+			{/* Tooltip */}
+			{hoveredFriend && (
+				<div
+					className={`star-tooltip ${tooltipBelow ? 'tooltip-below' : 'tooltip-above'}`}
+					style={{
+						left: `${tooltipPosition.x}px`,
+						top: `${tooltipPosition.y}px`,
+					}}
+					onClick={(e) => e.stopPropagation()}
+				>
+					<div className="tooltip-content">
+						<div className="tooltip-main">
+							<div className="tooltip-left">
+								<div className="tooltip-name">{hoveredFriend.username.charAt(0).toUpperCase() + hoveredFriend.username.slice(1)}</div>
+								<div className="tooltip-quote">"{hoveredFriend.bio}"</div>
+								<div className="tooltip-connection">
+									<div className="connection-icon"></div>
+									<span>Strong Connection</span>
+								</div>
+								<div className="tooltip-duration">
+									<svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+										<path d="M6 2V8H6L10 12L6 16V22H18V16L14 12L18 8V2H6ZM16 6.5V7.5L14.5 9L13.5 8L16 6.5ZM8 6.5L10.5 8L9.5 9L8 7.5V6.5ZM8 17.5L9.5 16L10.5 17L8 18.5V17.5ZM16 17.5V18.5L13.5 17L14.5 16L16 17.5ZM12 10.5C13.38 10.5 14.5 11.62 14.5 13C14.5 14.38 13.38 15.5 12 15.5C10.62 15.5 9.5 14.38 9.5 13C9.5 11.62 10.62 10.5 12 10.5Z" fill="#666666"/>
+									</svg>
+									<span>{getStarYears(hoveredFriend)}+ years</span>
+								</div>
+								<div className="tooltip-buttons">
+									<button className="tooltip-button" onClick={handleVisitPlanetFromMutuals}>Visit Planet</button>
+									<button className="tooltip-button" onClick={handleViewMutualsFromMutuals}>View Mutuals</button>
+								</div>
+							</div>
+							<div className="tooltip-right">
+								<img
+									src={hoveredFriend.profilePicture}
+									alt={hoveredFriend.username}
+									className="tooltip-profile-picture"
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 			)}
 
